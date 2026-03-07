@@ -23,7 +23,7 @@
 
     #login-container {
       max-width: 400px;
-      margin: 0 auto 30px auto;
+      margin: 0 auto 10px auto;
       padding: 20px;
       background: rgba(0,0,0,0.3);
       border-radius: 8px;
@@ -58,6 +58,27 @@
     #login-error {
       color: red;
       margin-top: 8px;
+    }
+
+    #footer-links-login {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 10px;
+      padding: 0 10px;
+    }
+
+    #footer-links-login a {
+      color: #f0f0f0;
+      background: rgba(0,0,0,0.4);
+      padding: 6px 12px;
+      border-radius: 5px;
+      text-decoration: none;
+      font-weight: bold;
+      box-shadow: 1px 1px 3px #000;
+    }
+
+    #footer-links-login a:hover {
+      background: rgba(0,0,0,0.6);
     }
 
     #tips-container {
@@ -101,31 +122,6 @@
       border: none;
       display: block;
     }
-
-    /* ÁSZF és GDPR gombok a lap legalján */
-    #footer-links {
-      position: fixed;
-      bottom: 10px;
-      width: 100%;
-      display: flex;
-      justify-content: space-between;
-      padding: 0 20px;
-      box-sizing: border-box;
-    }
-
-    #footer-links a {
-      color: #f0f0f0;
-      background: rgba(0,0,0,0.4);
-      padding: 6px 12px;
-      border-radius: 5px;
-      text-decoration: none;
-      font-weight: bold;
-      box-shadow: 1px 1px 3px #000;
-    }
-
-    #footer-links a:hover {
-      background: rgba(0,0,0,0.6);
-    }
   </style>
 </head>
 <body>
@@ -138,15 +134,15 @@
     <input type="password" id="login-pass" placeholder="Jelszó"><br>
     <button id="login-btn">Bejelentkezés</button>
     <p id="login-error"></p>
+
+    <!-- ÁSZF és GDPR közvetlenül login alatt -->
+    <div id="footer-links-login">
+      <a href="aszf.html" target="_blank">ÁSZF</a>
+      <a href="gdpr.html" target="_blank">GDPR</a>
+    </div>
   </div>
 
   <div id="tips-container" style="display:none;"></div>
-
-  <!-- Footer linkek -->
-  <div id="footer-links">
-    <a href="aszf.html" target="_blank">ÁSZF</a>
-    <a href="gdpr.html" target="_blank">GDPR</a>
-  </div>
 
   <script>
     const users = [
@@ -229,7 +225,6 @@
         .catch(e => console.error("Hiba a fetch során:", e));
     }
 
-    // Login esemény
     document.getElementById("login-btn").addEventListener("click", () => {
       const name = document.getElementById("login-name").value.trim();
       const pass = document.getElementById("login-pass").value.trim();
@@ -244,13 +239,12 @@
       }
     });
 
-    // ENTER billentyű loginhoz
+    // ENTER-rel login
     document.getElementById("login-pass").addEventListener("keydown", (e) => {
       if(e.key === "Enter"){
         document.getElementById("login-btn").click();
       }
     });
-
   </script>
 </body>
 </html>

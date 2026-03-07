@@ -96,6 +96,36 @@
       display: block;
     }
 
+    /* FIX linkek a képernyő szélén */
+    .fixed-link {
+      position: fixed;
+      top: 50%;
+      transform: translateY(-50%);
+      padding: 12px 18px;
+      background-color: #007bff;
+      color: white;
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: bold;
+      text-align: center;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.5);
+      z-index: 1000;
+      transition: background-color 0.3s ease;
+    }
+    .fixed-link:hover {
+      background-color: #0056b3;
+    }
+    .left-link {
+      left: 0;
+      border-top-right-radius: 8px;
+      border-bottom-right-radius: 8px;
+    }
+    .right-link {
+      right: 0;
+      border-top-left-radius: 8px;
+      border-bottom-left-radius: 8px;
+    }
+
   </style>
 </head>
 <body>
@@ -111,6 +141,10 @@
   </div>
 
   <div id="tips-container" style="display:none;"></div>
+
+  <!-- FIX linkek -->
+  <a href="aszf.html" class="fixed-link left-link">ÁSZF</a>
+  <a href="gdpr.html" class="fixed-link right-link">GDPR</a>
 
   <script>
     // Felhasználók listája

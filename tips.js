@@ -4,18 +4,29 @@ fetch("tips.json")
     const container = document.getElementById("tips-container");
     container.innerHTML = "";
     tips.sort((a,b) => new Date(a.start_time) - new Date(b.start_time));
+
     tips.forEach(tip => {
       const div = document.createElement("div");
       div.className = "tip";
 
+      // Meccs cím
       const title = document.createElement("h3");
       title.textContent = `${tip.match} (Győztes: ${tip.winner})`;
       div.appendChild(title);
 
+      // Kezdési idő
       const time = document.createElement("p");
       time.textContent = `Kezdés: ${new Date(tip.start_time).toLocaleString("hu-HU")}`;
       div.appendChild(time);
 
+      // Odds kiírása
+      if (tip.odds) {
+        const odds = document.createElement("p");
+        odds.textContent = `Odds: ${tip.odds}`;
+        div.appendChild(odds);
+      }
+
+      // YouTube vagy ICC stream
       const youtubeId = tip.youtube_id?.trim() || "";
       const iccLink = tip.icc_stream?.trim() || "";
 

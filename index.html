@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cricket Tippek</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #f5f5f5;
+    }
+    h1 {
+      text-align: center;
+    }
+    .tip {
+      background-color: #fff;
+      padding: 15px;
+      margin-bottom: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 5px rgba(0,0,0,0.1);
+    }
+    .tip h3 {
+      margin-top: 0;
+    }
+    .tip iframe {
+      width: 100%;
+      max-width: 560px;
+      height: 315px;
+      margin-top: 10px;
+      border: none;
+    }
+    .stream-button {
+      display: inline-block;
+      margin-top: 10px;
+      padding: 8px 12px;
+      background-color: #1a73e8;
+      color: white;
+      text-decoration: none;
+      border-radius: 5px;
+    }
+    .stream-button:hover {
+      background-color: #155ab6;
+    }
+  </style>
+</head>
+<body>
+  <h1>Cricket Tippek</h1>
+  <div id="tips-container">
+    <!-- Tippek ide töltődnek -->
+  </div>
+
+  <script>
+    // Betöltjük a tips.json fájlt
+    fetch('tips.json')
+      .then(response => response.json())
+      .then(tips => {
+        // Rendezés kezdési idő szerint növekvő sorrendben
+        tips.sort((a, b) => new Date(a.start_time) - new Date(b.start_time));
+
+        const container = document.getElementById('tips-container');
+
+        tips.forEach(tip => {
+          const div = document.createElement('div');
+          div.className = 'tip';
+          div.innerHTML = `
+            <h3>${tip.match}</h3>
+            <p><strong>Győztes:</strong> ${tip.winner}</p>
+            <p><strong>Kezdés ideje:</strong> ${new Date(tip.start_time).toLocaleString('hu-HU')}</p>
+            <iframe src="https://www.youtube.com/embed/${tip.youtube_id}" allowfullscreen></iframe>
+            <br>
+            <a class="stream-button" href="${tip.icc_stream}" target="_blank">Nézd az ICC streamet</a>
+          `;
+          container.appendChild(div);
+        });
+      })
+      .catch(err => {
+        console.error('Hiba a tippek betöltésekor:', err);
+      });
+  </script>
+</body>
+</html>

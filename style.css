@@ -1,0 +1,68 @@
+/* Alap stílus a bodyhoz */
+body {
+    font-family: Arial, sans-serif;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f5f5f5;
+    color: #333;
+}
+
+/* Fő cím */
+h1 {
+    text-align: center;
+    color: #1a73e8;
+}
+
+/* Tipp doboz */
+.tip {
+    background-color: #fff;
+    padding: 15px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+/* Tipp cím */
+.tip h3 {
+    margin-top: 0;
+    color: #222;
+}
+
+/* YouTube iframe reszponzív */
+.tip iframe {
+    width: 100%;
+    max-width: 560px;
+    height: 315px;
+    margin-top: 10px;
+    border: none;
+}
+
+/* ICC stream gomb */
+.stream-button {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 8px 12px;
+    background-color: #1a73e8;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: background-color 0.2s;
+}
+
+/* Gomb hover effekt */
+.stream-button:hover {
+    background-color: #155ab6;
+}
+
+/* Kezdési idő stílus */
+.tip p strong {
+    color: #555;
+}
+
+/* Mobil optimalizálás */
+@media (max-width: 600px) {
+    .tip iframe {
+        height: 200px;
+    }
+}

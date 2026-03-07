@@ -1,9 +1,19 @@
 fetch("tips.json")
-  .then(res => res.json())
+  .then(res => {
+    if (!res.ok) throw new Error(`HTTP hiba! Status: ${res.status}`);
+    return res.json();
+  })
   .then(tips => {
-    tips.sort((a,b) => new Date(a.start_time) - new Date(b.start_time));
+    console.log("Betöltött tippek:", tips); // Debug: látszik a console-ban
+
     const container = document.getElementById("tips-container");
+    if (!container) {
+      console.error("Nincs #tips-container a HTML-ben!");
+      return;
+    }
     container.innerHTML = "";
+
+    tips.sort((a,b) => new Date(a.start_time) - new Date(b.start_time));
 
     tips.forEach(tip => {
       const div = document.createElement("div");
@@ -14,25 +24,21 @@ fetch("tips.json")
       div.appendChild(title);
 
       const time = document.createElement("p");
-      time.textContent = `Kezdés: ${new Date(tip.start_time).toLocaleString()}`;
+      time.textContent = `Kezdés: ${new Date(tip.start_time).toLocaleString("hu-HU")}`;
       div.appendChild(time);
 
-
-      // Új logika: csak ha tényleges YouTube ID van
       const youtubeId = tip.youtube_id ? tip.youtube_id.trim() : "";
       const iccLink = tip.icc_stream ? tip.icc_stream.trim() : "";
 
-      if (youtubeId !== "") {
-        // Csak tényleges ID esetén
+      if (youtubeId) {
         const iframe = document.createElement("iframe");
         iframe.width = "560";
         iframe.height = "315";
         iframe.src = `https://www.youtube.com/embed/${youtubeId}`;
-        iframe.frameBorder = "0";
         iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
         iframe.allowFullscreen = true;
         div.appendChild(iframe);
-      } else if (iccLink !== "") {
+      } else if (iccLink) {
         const link = document.createElement("a");
         link.href = iccLink;
         link.textContent = "Nézd az ICC streamet";
@@ -44,8 +50,4 @@ fetch("tips.json")
       container.appendChild(div);
     });
   })
-  .catch(e => console.error(e));
-
-
-
-
+  .catch(e => console.error("Hiba a fetch során:", e));

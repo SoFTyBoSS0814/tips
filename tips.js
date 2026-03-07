@@ -1,49 +1,46 @@
 fetch("tips.json")
-  .then(response => response.json())
+  .then(res => res.json())
   .then(tips => {
-    tips.sort((a, b) => new Date(a.start_time) - new Date(b.start_time));
-
+    tips.sort((a,b) => new Date(a.start_time) - new Date(b.start_time));
     const container = document.getElementById("tips-container");
-    container.innerHTML = ""; // Ha újratöltöd, töröld a régieket
+    container.innerHTML = "";
 
     tips.forEach(tip => {
-      const tipDiv = document.createElement("div");
-      tipDiv.className = "tip";
+      const div = document.createElement("div");
+      div.className = "tip";
 
-      // Meccs és győztes
       const title = document.createElement("h3");
       title.textContent = `${tip.match} (Győztes: ${tip.winner})`;
-      tipDiv.appendChild(title);
+      div.appendChild(title);
 
-      // Kezdési idő
       const time = document.createElement("p");
-      const date = new Date(tip.start_time);
-      time.textContent = `Kezdés: ${date.toLocaleString()}`;
-      tipDiv.appendChild(time);
+      time.textContent = `Kezdés: ${new Date(tip.start_time).toLocaleString()}`;
+      div.appendChild(time);
 
-      if (tip.youtube_id && tip.youtube_id.trim() !== "") {
-        // Csak akkor jelenítsd meg az iframe-et, ha van értelmes YouTube ID
+      // Új logika: csak ha tényleges YouTube ID van
+      const youtubeId = tip.youtube_id ? tip.youtube_id.trim() : "";
+      const iccLink = tip.icc_stream ? tip.icc_stream.trim() : "";
+
+      if (youtubeId !== "") {
+        // Csak tényleges ID esetén
         const iframe = document.createElement("iframe");
         iframe.width = "560";
         iframe.height = "315";
-        iframe.src = `https://www.youtube.com/embed/${tip.youtube_id}`;
-        iframe.title = "YouTube Livestream";
+        iframe.src = `https://www.youtube.com/embed/${youtubeId}`;
         iframe.frameBorder = "0";
         iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
         iframe.allowFullscreen = true;
-        tipDiv.appendChild(iframe);
-      } else if (tip.icc_stream && tip.icc_stream.trim() !== "") {
-        // Csak ICC gomb, ha nincs YouTube ID
-        const iccLink = document.createElement("a");
-        iccLink.href = tip.icc_stream;
-        iccLink.target = "_blank";
-        iccLink.textContent = "Nézd az ICC streamet";
-        iccLink.className = "livestream-button";
-        tipDiv.appendChild(iccLink);
+        div.appendChild(iframe);
+      } else if (iccLink !== "") {
+        const link = document.createElement("a");
+        link.href = iccLink;
+        link.textContent = "Nézd az ICC streamet";
+        link.target = "_blank";
+        link.className = "livestream-button";
+        div.appendChild(link);
       }
-      // Ha nincs sem YouTube, sem ICC, nem jelenítünk meg semmit
 
-      container.appendChild(tipDiv);
+      container.appendChild(div);
     });
   })
-  .catch(error => console.error("Hiba a tippek betöltésénél:", error));
+  .catch(e => console.error(e));

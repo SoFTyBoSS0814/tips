@@ -104,13 +104,15 @@
       display: block;
     }
 
-    /* Jobb alsó sarok - ÁSZF / GDPR */
+    /* Jobb alsó sarok - külön linkek balra/jobbra */
     #footer-links {
       position: fixed;
       bottom: 10px;
-      right: 10px;
+      left: 0;
+      right: 0;
       display: flex;
-      gap: 15px;
+      justify-content: space-between; /* balra-jobbra tolja a linkeket */
+      padding: 0 20px;
       font-size: 0.9em;
       z-index: 1000;
     }
@@ -128,6 +130,7 @@
     #footer-links a:hover {
       background: rgba(0,0,0,0.6);
     }
+
   </style>
 </head>
 <body>
@@ -144,7 +147,7 @@
 
   <div id="tips-container" style="display:none;"></div>
 
-  <!-- Jobb alsó linkek -->
+  <!-- Jobb alsó linkek: ÁSZF balra, GDPR jobbra -->
   <div id="footer-links">
     <a href="aszf.html" target="_blank">ÁSZF</a>
     <a href="gdpr.html" target="_blank">GDPR</a>
@@ -219,7 +222,6 @@
 
       const user = users.find(u => u.name.toLowerCase() === name.toLowerCase() && u.password === pass);
       if(!user){
-        // Vörös, figyelmeztető hibaüzenet
         errorP.textContent = "Hibás felhasználónév/jelszó! Jelszóemlékeztetőt kérj DC-n!";
       } else {
         loginContainer.style.display = "none";

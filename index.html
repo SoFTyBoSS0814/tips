@@ -8,7 +8,7 @@
     /* Alap stílusok */
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(135deg, #a1c4fd, #c2e9fb);
+      background: linear-gradient(135deg, #d0f0fd, #e0f7e9);
       margin: 0;
       padding: 20px;
       color: #333;
@@ -17,9 +17,8 @@
     h1 {
       text-align: center;
       margin-bottom: 40px;
-      font-size: 2.5em;
-      color: #0d47a1;
-      text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+      font-size: 2.2em;
+      color: #00796b;
     }
 
     #tips-container {
@@ -29,34 +28,34 @@
 
     /* Tip kártyák */
     .tip {
-      background: linear-gradient(145deg, #ffffff, #e3f2fd);
-      border-radius: 15px;
+      background: #ffffff;
+      border-radius: 12px;
       padding: 20px;
       margin-bottom: 25px;
-      box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
       transition: transform 0.3s, box-shadow 0.3s;
     }
 
     .tip:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 12px 30px rgba(0,0,0,0.2);
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(0,0,0,0.12);
     }
 
     .tip h3 {
       margin-top: 0;
-      font-size: 1.5em;
-      color: #0d47a1;
+      font-size: 1.4em;
+      color: #004d40;
     }
 
     .tip p {
       margin: 5px 0;
-      font-size: 1.1em;
+      font-size: 1.05em;
     }
 
     /* Odds stílus */
     .tip .odds {
       font-weight: bold;
-      color: #d32f2f;
+      color: #388e3c;
     }
 
     /* Livestream gomb */
@@ -64,7 +63,7 @@
       display: inline-block;
       margin-top: 12px;
       padding: 10px 18px;
-      background-color: #ff5722;
+      background-color: #4db6ac;
       color: white;
       text-decoration: none;
       border-radius: 8px;
@@ -73,7 +72,7 @@
     }
 
     .livestream-button:hover {
-      background-color: #e64a19;
+      background-color: #26a69a;
       transform: scale(1.05);
     }
 
@@ -86,7 +85,7 @@
       height: 315px;
       border: none;
       display: block;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+      box-shadow: 0 3px 12px rgba(0,0,0,0.1);
       transition: transform 0.3s;
     }
 
@@ -101,6 +100,5 @@
 
   <!-- Csak a login.js script -->
   <script src="login.js" defer></script>
-  <!-- tips.js NEM hívódik itt, csak a login.js betöltése után -->
 </body>
 </html>

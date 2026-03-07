@@ -2,10 +2,8 @@
 
 // Felhasználók listája, default accounttal
 const users = [
-  { name: "Niko", password: "Niko123" },
-  { name: "Mark", password: "Mark123" },
-  { name: "default", password: "default" },
-  { name: "ferenc", password: "FERI" }
+  { name: "Mark", password: "Mark123" }
+  }
 ];
 
 // Bejelentkezés ellenőrzése

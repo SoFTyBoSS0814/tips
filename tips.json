@@ -1,10 +1,10 @@
-[
+
   {
     "match": "India vs Új-Zéland",
     "winner": "India",
     "start_time": "2026-03-08T14:30:00Z",
     "youtube_id": "",
-    "icc_stream": "https://www.icc-cricket.com/tournaments/mens-t20-world-cup-2026/matches/268129/india-vs-new-zealand"
+    "icc_stream": "https://www.icc-cricket.com/tournaments/mens-t20-world-cup-2026/matches/268129/india-vs-new-zealand",
     "odds": "1.4"
   },
   {
@@ -12,7 +12,7 @@
     "winner": "Kajmán-Szigetek",
     "start_time": "2026-03-08T15:30:00Z",
     "youtube_id": "",
-    "icc_stream": "https://www.icc-cricket.com/matches/269637/cayman-islands-vs-argentina"
+    "icc_stream": "https://www.icc-cricket.com/matches/269637/cayman-islands-vs-argentina",
     "odds": "1.4"
   },
   {
@@ -20,8 +20,7 @@
     "winner": "Mexikó",
     "start_time": "2026-03-08T20:30:00Z",
     "youtube_id": "",
-    "icc_stream": "https://www.icc-cricket.com/matches/269638/mexico-vs-suriname"
+    "icc_stream": "https://www.icc-cricket.com/matches/269638/mexico-vs-suriname",
     "odds": "1.75"
   }
-
 ]

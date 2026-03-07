@@ -1,20 +1,9 @@
 fetch("tips.json")
-  .then(res => {
-    if (!res.ok) throw new Error(`HTTP hiba! Status: ${res.status}`);
-    return res.json();
-  })
+  .then(res => res.json())
   .then(tips => {
-    console.log("Betöltött tippek:", tips); // Debug: látszik a console-ban
-
     const container = document.getElementById("tips-container");
-    if (!container) {
-      console.error("Nincs #tips-container a HTML-ben!");
-      return;
-    }
     container.innerHTML = "";
-
     tips.sort((a,b) => new Date(a.start_time) - new Date(b.start_time));
-
     tips.forEach(tip => {
       const div = document.createElement("div");
       div.className = "tip";
@@ -27,13 +16,11 @@ fetch("tips.json")
       time.textContent = `Kezdés: ${new Date(tip.start_time).toLocaleString("hu-HU")}`;
       div.appendChild(time);
 
-      const youtubeId = tip.youtube_id ? tip.youtube_id.trim() : "";
-      const iccLink = tip.icc_stream ? tip.icc_stream.trim() : "";
+      const youtubeId = tip.youtube_id?.trim() || "";
+      const iccLink = tip.icc_stream?.trim() || "";
 
       if (youtubeId) {
         const iframe = document.createElement("iframe");
-        iframe.width = "560";
-        iframe.height = "315";
         iframe.src = `https://www.youtube.com/embed/${youtubeId}`;
         iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
         iframe.allowFullscreen = true;

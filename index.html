@@ -54,8 +54,9 @@
     }
 
     #login-error {
-      color: red;
+      color: #ff4d4d;
       font-weight: bold;
+      margin-top: 10px;
     }
 
     #tips-container {
@@ -75,7 +76,7 @@
       text-shadow: 1px 1px 2px #000;
     }
 
-    .livestream-button {
+    .livestream-button, .scorecard-button {
       display: inline-block;
       margin-top: 12px;
       padding: 8px 14px;
@@ -85,9 +86,10 @@
       border-radius: 5px;
       font-weight: bold;
       transition: background-color 0.3s ease;
+      margin-right: 5px;
     }
 
-    .livestream-button:hover {
+    .livestream-button:hover, .scorecard-button:hover {
       background-color: #0056b3;
     }
 
@@ -101,22 +103,29 @@
       display: block;
     }
 
-    /* ÁSZF / GDPR linkek */
+    /* Footer linkek dobozban */
     .footer-links {
       display: flex;
       justify-content: space-between;
       max-width: 700px;
       margin: 30px auto 0 auto;
-      padding: 0 10px;
+      padding: 10px 20px;
+      background: rgba(0,0,0,0.4);
+      border-radius: 8px;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.5);
     }
 
     .footer-links a {
       color: #f0f0f0;
-      text-decoration: underline;
+      text-decoration: none;
       font-weight: bold;
+      padding: 5px 10px;
+      border-radius: 5px;
+      transition: background-color 0.3s, color 0.3s;
     }
 
     .footer-links a:hover {
+      background-color: rgba(255, 215, 0, 0.3);
       color: #ffd700;
     }
   </style>
@@ -141,7 +150,6 @@
   </div>
 
   <script>
-    // Felhasználók listája
     const users = [
       { name: "Niko", password: "Niko123" },
       { name: "Mark", password: "Mark123" },
@@ -180,6 +188,7 @@
 
             const youtubeId = tip.youtube_id?.trim() || "";
             const iccLink = tip.icc_stream?.trim() || "";
+            const scorecard = tip.scorecard?.trim() || "";
 
             if (youtubeId) {
               const iframe = document.createElement("iframe");
@@ -196,15 +205,13 @@
               div.appendChild(link);
             }
 
-            // Scorecard gomb
-            if (tip.scorecard) {
-              const scorecardLink = document.createElement("a");
-              scorecardLink.href = tip.scorecard;
-              scorecardLink.textContent = "Scorecard";
-              scorecardLink.target = "_blank";
-              scorecardLink.className = "livestream-button";
-              scorecardLink.style.marginLeft = "10px";
-              div.appendChild(scorecardLink);
+            if(scorecard){
+              const scLink = document.createElement("a");
+              scLink.href = scorecard;
+              scLink.textContent = "Scorecard";
+              scLink.target = "_blank";
+              scLink.className = "scorecard-button";
+              div.appendChild(scLink);
             }
 
             tipsContainer.appendChild(div);

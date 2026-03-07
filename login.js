@@ -8,12 +8,12 @@ const users = [
 
 // Login ellenőrző funkció
 function checkLogin() {
-  // Prompt és trim minden felesleges szóközt
-  const username = prompt("Add meg a felhasználói ID-t:").trim();
-  const password = prompt("Add meg a jelszót:").trim();
+  // Prompt: most már "name"-et kérünk
+  const nameInput = prompt("Add meg a neved:").trim();
+  const passwordInput = prompt("Add meg a jelszót:").trim();
 
-  // Felhasználó keresése
-  const user = users.find(u => u.id === username && u.password === password);
+  // Ellenőrizzük a name + password párost
+  const user = users.find(u => u.name === nameInput && u.password === passwordInput);
 
   if (!user) {
     // Hibás login → felülírjuk az oldalt
@@ -31,5 +31,5 @@ function checkLogin() {
   }
 }
 
-// Azonnal lefuttatjuk login ellenőrzést
+// Azonnal lefuttatjuk a login ellenőrzést
 checkLogin();

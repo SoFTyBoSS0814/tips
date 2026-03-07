@@ -11,6 +11,8 @@
       color: #f0f0f0;
       margin: 0;
       padding: 20px;
+      position: relative;
+      min-height: 100vh;
     }
 
     h1 {
@@ -51,6 +53,12 @@
 
     #login-container button:hover {
       background-color: #218838;
+    }
+
+    #login-error {
+      margin-top: 10px;
+      font-weight: bold;
+      color: #ff4d4d; /* vörös hibaüzenet */
     }
 
     #tips-container {
@@ -96,6 +104,30 @@
       display: block;
     }
 
+    /* Jobb alsó sarok - ÁSZF / GDPR */
+    #footer-links {
+      position: fixed;
+      bottom: 10px;
+      right: 10px;
+      display: flex;
+      gap: 15px;
+      font-size: 0.9em;
+      z-index: 1000;
+    }
+
+    #footer-links a {
+      color: #ffdd57;
+      text-decoration: none;
+      font-weight: bold;
+      background: rgba(0,0,0,0.3);
+      padding: 5px 10px;
+      border-radius: 5px;
+      transition: background 0.3s;
+    }
+
+    #footer-links a:hover {
+      background: rgba(0,0,0,0.6);
+    }
   </style>
 </head>
 <body>
@@ -107,13 +139,18 @@
     <input type="text" id="login-name" placeholder="Név"><br>
     <input type="password" id="login-pass" placeholder="Jelszó"><br>
     <button id="login-btn">Bejelentkezés</button>
-    <p style="color: #ffdddd;" id="login-error"></p>
+    <p id="login-error"></p>
   </div>
 
   <div id="tips-container" style="display:none;"></div>
 
+  <!-- Jobb alsó linkek -->
+  <div id="footer-links">
+    <a href="aszf.html" target="_blank">ÁSZF</a>
+    <a href="gdpr.html" target="_blank">GDPR</a>
+  </div>
+
   <script>
-    // Felhasználók listája
     const users = [
       { name: "Niko", password: "Niko123" },
       { name: "Mark", password: "Mark123" },
@@ -182,7 +219,7 @@
 
       const user = users.find(u => u.name.toLowerCase() === name.toLowerCase() && u.password === pass);
       if(!user){
-        // módosított hibaüzenet
+        // Vörös, figyelmeztető hibaüzenet
         errorP.textContent = "Hibás felhasználónév/jelszó! Jelszóemlékeztetőt kérj DC-n!";
       } else {
         loginContainer.style.display = "none";

@@ -54,7 +54,7 @@
     }
 
     #login-error {
-      color: #ff4d4d;
+      color: red;
       font-weight: bold;
       margin-top: 10px;
     }
@@ -79,6 +79,7 @@
     .livestream-button, .scorecard-button {
       display: inline-block;
       margin-top: 12px;
+      margin-right: 10px;
       padding: 8px 14px;
       background-color: #007bff;
       color: white;
@@ -86,7 +87,6 @@
       border-radius: 5px;
       font-weight: bold;
       transition: background-color 0.3s ease;
-      margin-right: 5px;
     }
 
     .livestream-button:hover, .scorecard-button:hover {
@@ -103,31 +103,27 @@
       display: block;
     }
 
-    /* Footer linkek külön dobozokban, bal-jobb oldalra */
-    .footer-links {
+    .legal-container {
+      position: fixed;
+      bottom: 10px;
+      width: 100%;
       display: flex;
       justify-content: space-between;
-      max-width: 700px;
-      margin: 30px auto 0 auto;
+      padding: 0 20px;
+      box-sizing: border-box;
     }
 
-    .footer-links .left, .footer-links .right {
-      background: rgba(0,0,0,0.4);
-      padding: 10px 15px;
-      border-radius: 8px;
-      box-shadow: 0 3px 10px rgba(0,0,0,0.5);
-    }
-
-    .footer-links a {
+    .legal-container a {
       color: #f0f0f0;
       text-decoration: none;
+      background: rgba(0,0,0,0.4);
+      padding: 8px 12px;
+      border-radius: 5px;
       font-weight: bold;
-      transition: background-color 0.3s, color 0.3s;
     }
 
-    .footer-links a:hover {
-      background-color: rgba(255, 215, 0, 0.3);
-      color: #ffd700;
+    .legal-container a:hover {
+      background: rgba(0,0,0,0.6);
     }
   </style>
 </head>
@@ -145,17 +141,14 @@
 
   <div id="tips-container" style="display:none;"></div>
 
-  <!-- Footer külön dobozokkal -->
-  <div class="footer-links">
-    <div class="left">
-      <a href="aszf.html" target="_blank">ÁSZF</a>
-    </div>
-    <div class="right">
-      <a href="gdpr.html" target="_blank">GDPR</a>
-    </div>
+  <!-- Legal links -->
+  <div class="legal-container">
+    <a href="aszf.html" target="_blank">ÁSZF</a>
+    <a href="gdpr.html" target="_blank">GDPR</a>
   </div>
 
   <script>
+    // Felhasználók listája
     const users = [
       { name: "Niko", password: "Niko123" },
       { name: "Mark", password: "Mark123" },
@@ -194,7 +187,7 @@
 
             const youtubeId = tip.youtube_id?.trim() || "";
             const iccLink = tip.icc_stream?.trim() || "";
-            const scorecard = tip.scorecard?.trim() || "";
+            const scoreLink = tip.scorecard?.trim() || "";
 
             if (youtubeId) {
               const iframe = document.createElement("iframe");
@@ -211,13 +204,13 @@
               div.appendChild(link);
             }
 
-            if(scorecard){
-              const scLink = document.createElement("a");
-              scLink.href = scorecard;
-              scLink.textContent = "Scorecard";
-              scLink.target = "_blank";
-              scLink.className = "scorecard-button";
-              div.appendChild(scLink);
+            if (scoreLink) {
+              const scoreLinkEl = document.createElement("a");
+              scoreLinkEl.href = scoreLink;
+              scoreLinkEl.textContent = "Scorecard";
+              scoreLinkEl.target = "_blank";
+              scoreLinkEl.className = "scorecard-button";
+              div.appendChild(scoreLinkEl);
             }
 
             tipsContainer.appendChild(div);
@@ -228,7 +221,7 @@
         .catch(e => console.error("Hiba a fetch során:", e));
     }
 
-    document.getElementById("login-btn").addEventListener("click", () => {
+    function login() {
       const name = document.getElementById("login-name").value.trim();
       const pass = document.getElementById("login-pass").value.trim();
 
@@ -240,8 +233,17 @@
         errorP.textContent = "";
         loadTips();
       }
+    }
+
+    document.getElementById("login-btn").addEventListener("click", login);
+
+    // ENTER-t figyelő események
+    document.getElementById("login-name").addEventListener("keydown", function(e){
+      if(e.key === "Enter") login();
+    });
+    document.getElementById("login-pass").addEventListener("keydown", function(e){
+      if(e.key === "Enter") login();
     });
   </script>
-
 </body>
 </html>

@@ -17,7 +17,7 @@ fetch("tips.json")
       time.textContent = `Kezdés: ${new Date(tip.start_time).toLocaleString()}`;
       div.appendChild(time);
 
-      const title = document.createElememnt("h3");
+      const title = document.createElement("h3");
       title.textContent = `${odds.match} {Odds: ${odds.match})`;
       div.appendChild(title);
 
@@ -48,5 +48,6 @@ fetch("tips.json")
     });
   })
   .catch(e => console.error(e));
+
 
 

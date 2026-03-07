@@ -21,26 +21,22 @@ fetch("tips.json")
       time.textContent = `Kezdés: ${date.toLocaleString()}`;
       tipDiv.appendChild(time);
 
-      // YouTube iframe
+      // Stream logika: csak egy legyen
       if (tip.youtube_id) {
-        const iframe = document.createElement("iframe");
-        iframe.width = "560";
-        iframe.height = "315";
-        iframe.src = `https://www.youtube.com/embed/${tip.youtube_id}`;
-        iframe.title = "YouTube stream";
-        iframe.frameBorder = "0";
-        iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
-        iframe.allowFullscreen = true;
-        tipDiv.appendChild(iframe);
-      }
-
-      // ICC link gomb (ha nincs YouTube)
-      if (!tip.youtube_id && tip.icc_stream) {
+        // YouTube Livestream gomb (új ablakban)
+        const ytLink = document.createElement("a");
+        ytLink.href = `https://www.youtube.com/watch?v=${tip.youtube_id}`;
+        ytLink.target = "_blank";
+        ytLink.textContent = "YouTube Livestream";
+        ytLink.className = "livestream-button";
+        tipDiv.appendChild(ytLink);
+      } else if (tip.icc_stream) {
+        // ICC Livestream gomb
         const iccLink = document.createElement("a");
         iccLink.href = tip.icc_stream;
         iccLink.target = "_blank";
-        iccLink.textContent = "Nézd az ICC streamet";
-        iccLink.className = "icc-button";
+        iccLink.textContent = "ICC Livestream";
+        iccLink.className = "livestream-button";
         tipDiv.appendChild(iccLink);
       }
 

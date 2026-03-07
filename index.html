@@ -96,12 +96,37 @@
     iframe:hover {
       transform: scale(1.02);
     }
+
+    /* ÁSZF gomb a jobb alsó sarokban */
+    #aszf-link {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background-color: #ffca28;
+      color: rgb(33, 37, 41);
+      font-weight: bold;
+      padding: 12px 20px;
+      border-radius: 8px;
+      text-decoration: none;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+      transition: all 0.3s ease;
+      z-index: 9999;
+    }
+
+    #aszf-link:hover {
+      background-color: #ffc107;
+      transform: scale(1.05);
+    }
   </style>
 </head>
 <body>
   <h1>Cricket Tippek</h1>
   <div id="tips-container"></div>
 
+  <!-- ÁSZF gomb -->
+  <a href="aszf.html" target="_blank" id="aszf-link">ÁSZF</a>
+
+  <!-- Login script, ami betölti a tips.js-t sikeres login után -->
   <script src="login.js" defer></script>
 </body>
 </html>

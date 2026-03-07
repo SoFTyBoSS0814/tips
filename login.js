@@ -1,6 +1,6 @@
 const users = [
   { id: "4u83rj38", name: "Niko", password: "Niko123" },
-  { id: "7k12lmn9", name: "Anna Kovács", password: "titkos" }
+  { id: "7k12lmn9", name: "Mark", password: "Mark123" }
 ];
 
 function checkLogin() {

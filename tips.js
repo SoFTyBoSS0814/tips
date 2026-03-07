@@ -21,23 +21,23 @@ fetch("tips.json")
       time.textContent = `Kezdés: ${date.toLocaleString()}`;
       tipDiv.appendChild(time);
 
-      // Stream logika: csak egy legyen
+      // Csak egy stream: YouTube vagy ICC
+      let linkButton = null;
+
       if (tip.youtube_id) {
-        // YouTube Livestream gomb (új ablakban)
-        const ytLink = document.createElement("a");
-        ytLink.href = `https://www.youtube.com/watch?v=${tip.youtube_id}`;
-        ytLink.target = "_blank";
-        ytLink.textContent = "YouTube Livestream";
-        ytLink.className = "livestream-button";
-        tipDiv.appendChild(ytLink);
+        linkButton = document.createElement("a");
+        linkButton.href = `https://www.youtube.com/watch?v=${tip.youtube_id}`;
+        linkButton.textContent = "YouTube Livestream";
       } else if (tip.icc_stream) {
-        // ICC Livestream gomb
-        const iccLink = document.createElement("a");
-        iccLink.href = tip.icc_stream;
-        iccLink.target = "_blank";
-        iccLink.textContent = "ICC Livestream";
-        iccLink.className = "livestream-button";
-        tipDiv.appendChild(iccLink);
+        linkButton = document.createElement("a");
+        linkButton.href = tip.icc_stream;
+        linkButton.textContent = "ICC Livestream";
+      }
+
+      if (linkButton) {
+        linkButton.target = "_blank";
+        linkButton.className = "livestream-button";
+        tipDiv.appendChild(linkButton);
       }
 
       container.appendChild(tipDiv);

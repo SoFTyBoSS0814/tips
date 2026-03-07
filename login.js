@@ -1,30 +1,35 @@
 // login.js
 
-// Példa felhasználók
+// Felhasználók tömbje
 const users = [
   { id: "4u83rj38", name: "Niko", password: "Niko123" },
   { id: "7k12lmn9", name: "Anna Kovács", password: "titkos" }
 ];
 
-// Funkció a login ellenőrzésére
+// Login ellenőrző funkció
 function checkLogin() {
-  const username = prompt("Add meg a felhasználói ID-t:");
-  const password = prompt("Add meg a jelszót:");
+  // Prompt és trim minden felesleges szóközt
+  const username = prompt("Add meg a felhasználói ID-t:").trim();
+  const password = prompt("Add meg a jelszót:").trim();
 
-  // Ellenőrizzük, hogy van-e ilyen felhasználó
+  // Felhasználó keresése
   const user = users.find(u => u.id === username && u.password === password);
 
   if (!user) {
-    // Ha nincs, felülírjuk az oldalt
+    // Hibás login → felülírjuk az oldalt
     document.body.innerHTML = "<h1 style='text-align:center;margin-top:50px;'>LOGIN REQUIRED</h1>";
     document.body.style.fontFamily = "Arial, sans-serif";
     document.body.style.background = "#f5f5f5";
   } else {
-    // Ha van, üdvözöljük a felhasználót
+    // Sikeres login → üdvözlés és tips.js betöltése
     alert(`Üdvözöllek, ${user.name}!`);
-    // Itt töltődhet be a tips.js (ha defer-el van behúzva)
+
+    // Dinamikusan betöltjük a tips.js-t
+    const script = document.createElement("script");
+    script.src = "tips.js";
+    document.body.appendChild(script);
   }
 }
 
-// Azonnal lefuttatjuk a login ellenőrzést az oldal betöltésekor
+// Azonnal lefuttatjuk login ellenőrzést
 checkLogin();

@@ -1,30 +1,35 @@
 fetch("tips.json")
   .then(res => res.json())
   .then(tips => {
-    // Rendezzük a tippeket start_time szerint
+    // Rendezés start_time szerint (korábbi meccsek előre)
     tips.sort((a, b) => new Date(a.start_time) - new Date(b.start_time));
 
     const container = document.getElementById("tips-container");
-    container.innerHTML = "";
+    container.innerHTML = ""; // töröljük a korábbi tartalmat
 
     tips.forEach(tip => {
       const div = document.createElement("div");
       div.className = "tip";
 
+      // Meccs és győztes
       const title = document.createElement("h3");
       title.textContent = `${tip.match} (Győztes: ${tip.winner})`;
       div.appendChild(title);
 
+      // Kezdési idő
       const time = document.createElement("p");
       time.textContent = `Kezdés: ${new Date(tip.start_time).toLocaleString("hu-HU")}`;
       div.appendChild(time);
 
-      // Odds kiírása
-      const odds = document.createElement("p");
-      odds.className = "odds";
-      odds.textContent = `Odds: ${tip.odds}`;
-      div.appendChild(odds);
+      // Odds megjelenítése
+      if (tip.odds) {
+        const oddsP = document.createElement("p");
+        oddsP.textContent = `Odds: ${tip.odds}`;
+        oddsP.style.fontWeight = "bold";
+        div.appendChild(oddsP);
+      }
 
+      // YouTube vagy ICC stream
       const youtubeId = tip.youtube_id?.trim() || "";
       const iccLink = tip.icc_stream?.trim() || "";
 

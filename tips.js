@@ -18,7 +18,7 @@ fetch("tips.json")
       div.appendChild(time);
 
       const title = document.createElememnt("h3");
-      title.textContent = `$@{odds.match} {Odds: ${odds.match})`;
+      title.textContent = `${odds.match} {Odds: ${odds.match})`;
       div.appendChild(title);
 
       // Új logika: csak ha tényleges YouTube ID van
@@ -48,4 +48,5 @@ fetch("tips.json")
     });
   })
   .catch(e => console.error(e));
+
 

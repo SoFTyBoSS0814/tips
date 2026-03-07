@@ -1,10 +1,10 @@
 fetch("tips.json")
   .then(response => response.json())
   .then(tips => {
-    // Időrendi sorrend
     tips.sort((a, b) => new Date(a.start_time) - new Date(b.start_time));
 
     const container = document.getElementById("tips-container");
+    container.innerHTML = ""; // Ha újratöltöd, töröld a régieket
 
     tips.forEach(tip => {
       const tipDiv = document.createElement("div");
@@ -21,24 +21,27 @@ fetch("tips.json")
       time.textContent = `Kezdés: ${date.toLocaleString()}`;
       tipDiv.appendChild(time);
 
-      // Csak egy stream: YouTube vagy ICC
-      let linkButton = null;
-
-      if (tip.youtube_id) {
-        linkButton = document.createElement("a");
-        linkButton.href = `https://www.youtube.com/watch?v=${tip.youtube_id}`;
-        linkButton.textContent = "YouTube Livestream";
-      } else if (tip.icc_stream) {
-        linkButton = document.createElement("a");
-        linkButton.href = tip.icc_stream;
-        linkButton.textContent = "ICC Livestream";
+      if (tip.youtube_id && tip.youtube_id.trim() !== "") {
+        // Csak akkor jelenítsd meg az iframe-et, ha van értelmes YouTube ID
+        const iframe = document.createElement("iframe");
+        iframe.width = "560";
+        iframe.height = "315";
+        iframe.src = `https://www.youtube.com/embed/${tip.youtube_id}`;
+        iframe.title = "YouTube Livestream";
+        iframe.frameBorder = "0";
+        iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
+        iframe.allowFullscreen = true;
+        tipDiv.appendChild(iframe);
+      } else if (tip.icc_stream && tip.icc_stream.trim() !== "") {
+        // Csak ICC gomb, ha nincs YouTube ID
+        const iccLink = document.createElement("a");
+        iccLink.href = tip.icc_stream;
+        iccLink.target = "_blank";
+        iccLink.textContent = "Nézd az ICC streamet";
+        iccLink.className = "livestream-button";
+        tipDiv.appendChild(iccLink);
       }
-
-      if (linkButton) {
-        linkButton.target = "_blank";
-        linkButton.className = "livestream-button";
-        tipDiv.appendChild(linkButton);
-      }
+      // Ha nincs sem YouTube, sem ICC, nem jelenítünk meg semmit
 
       container.appendChild(tipDiv);
     });

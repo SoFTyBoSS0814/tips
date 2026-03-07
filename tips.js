@@ -17,6 +17,10 @@ fetch("tips.json")
       time.textContent = `Kezdés: ${new Date(tip.start_time).toLocaleString()}`;
       div.appendChild(time);
 
+      const title = document.createElememnt("h3");
+      title.textContent = `$@{odds.match} {Odds: ${odds.match})`;
+      div.appendChild(title);
+
       // Új logika: csak ha tényleges YouTube ID van
       const youtubeId = tip.youtube_id ? tip.youtube_id.trim() : "";
       const iccLink = tip.icc_stream ? tip.icc_stream.trim() : "";
@@ -44,3 +48,4 @@ fetch("tips.json")
     });
   })
   .catch(e => console.error(e));
+

@@ -1,6 +1,8 @@
 const users = [
   { name: "Niko", password: "Niko123" },
-  { name: "Mark", password: "Mark123" }
+  { name: "Mark", password: "Mark123" },
+  { name: "default", password: "default" }
+  
 ];
 
 function checkLogin() {

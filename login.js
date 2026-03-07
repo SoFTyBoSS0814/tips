@@ -4,7 +4,8 @@
 const users = [
   { name: "Niko", password: "Niko123" },
   { name: "Mark", password: "Mark123" },
-  { name: "default", password: "default" } // <--- működő default
+  { name: "default", password: "default" },
+  { name: "ferenc", password: "FERI" }
 ];
 
 // Bejelentkezés ellenőrzése

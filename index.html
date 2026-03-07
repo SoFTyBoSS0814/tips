@@ -11,8 +11,6 @@
       color: #f0f0f0;
       margin: 0;
       padding: 20px;
-      position: relative;
-      min-height: 100vh;
     }
 
     h1 {
@@ -56,9 +54,8 @@
     }
 
     #login-error {
-      margin-top: 10px;
+      color: red;
       font-weight: bold;
-      color: #ff4d4d; /* vörös hibaüzenet */
     }
 
     #tips-container {
@@ -104,33 +101,24 @@
       display: block;
     }
 
-    /* Jobb alsó sarok - külön linkek balra/jobbra */
-    #footer-links {
-      position: fixed;
-      bottom: 10px;
-      left: 0;
-      right: 0;
+    /* ÁSZF / GDPR linkek */
+    .footer-links {
       display: flex;
-      justify-content: space-between; /* balra-jobbra tolja a linkeket */
-      padding: 0 20px;
-      font-size: 0.9em;
-      z-index: 1000;
+      justify-content: space-between;
+      max-width: 700px;
+      margin: 30px auto 0 auto;
+      padding: 0 10px;
     }
 
-    #footer-links a {
-      color: #ffdd57;
-      text-decoration: none;
+    .footer-links a {
+      color: #f0f0f0;
+      text-decoration: underline;
       font-weight: bold;
-      background: rgba(0,0,0,0.3);
-      padding: 5px 10px;
-      border-radius: 5px;
-      transition: background 0.3s;
     }
 
-    #footer-links a:hover {
-      background: rgba(0,0,0,0.6);
+    .footer-links a:hover {
+      color: #ffd700;
     }
-
   </style>
 </head>
 <body>
@@ -147,13 +135,13 @@
 
   <div id="tips-container" style="display:none;"></div>
 
-  <!-- Jobb alsó linkek: ÁSZF balra, GDPR jobbra -->
-  <div id="footer-links">
+  <div class="footer-links">
     <a href="aszf.html" target="_blank">ÁSZF</a>
     <a href="gdpr.html" target="_blank">GDPR</a>
   </div>
 
   <script>
+    // Felhasználók listája
     const users = [
       { name: "Niko", password: "Niko123" },
       { name: "Mark", password: "Mark123" },
@@ -206,6 +194,17 @@
               link.target = "_blank";
               link.className = "livestream-button";
               div.appendChild(link);
+            }
+
+            // Scorecard gomb
+            if (tip.scorecard) {
+              const scorecardLink = document.createElement("a");
+              scorecardLink.href = tip.scorecard;
+              scorecardLink.textContent = "Scorecard";
+              scorecardLink.target = "_blank";
+              scorecardLink.className = "livestream-button";
+              scorecardLink.style.marginLeft = "10px";
+              div.appendChild(scorecardLink);
             }
 
             tipsContainer.appendChild(div);

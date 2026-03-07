@@ -8,30 +8,68 @@
     body {
       font-family: Arial, sans-serif;
       background: rgb(56, 87, 101);
+      color: #f0f0f0;
       margin: 0;
       padding: 20px;
-      color: #f0f0f0;
     }
+
     h1 {
       text-align: center;
-      margin-bottom: 30px;
+      margin-bottom: 20px;
       text-shadow: 1px 1px 3px #000;
     }
+
+    #login-container {
+      max-width: 400px;
+      margin: 0 auto 30px auto;
+      padding: 20px;
+      background: rgba(0,0,0,0.3);
+      border-radius: 8px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+      text-align: center;
+    }
+
+    #login-container input {
+      padding: 8px;
+      margin: 5px;
+      width: 80%;
+      border-radius: 4px;
+      border: none;
+      font-size: 16px;
+    }
+
+    #login-container button {
+      padding: 10px 20px;
+      margin-top: 10px;
+      border-radius: 5px;
+      border: none;
+      background-color: #28a745;
+      color: #fff;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    #login-container button:hover {
+      background-color: #218838;
+    }
+
     #tips-container {
       max-width: 700px;
       margin: 0 auto;
     }
+
     .tip {
-      background: rgba(0,0,0,0.3);
+      background: rgba(0,0,0,0.2);
       border-radius: 8px;
       padding: 15px;
       margin-bottom: 20px;
       box-shadow: 0 2px 8px rgba(0,0,0,0.5);
     }
-    .tip h3 {
-      margin-top: 0;
+
+    .tip h3, .tip p {
       text-shadow: 1px 1px 2px #000;
     }
+
     .livestream-button {
       display: inline-block;
       margin-top: 12px;
@@ -43,9 +81,11 @@
       font-weight: bold;
       transition: background-color 0.3s ease;
     }
+
     .livestream-button:hover {
       background-color: #0056b3;
     }
+
     iframe {
       margin-top: 15px;
       border-radius: 8px;
@@ -56,46 +96,100 @@
       display: block;
     }
 
-    /* FIX BAL-JOBB linkek */
-    .fixed-link {
-      position: fixed;
-      top: 50%;
-      transform: translateY(-50%);
-      padding: 12px 18px;
-      background-color: #007bff;
-      color: white;
-      text-decoration: none;
-      border-radius: 8px;
-      font-weight: bold;
-      text-align: center;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.5);
-      z-index: 1000;
-      transition: background-color 0.3s ease;
-    }
-    .fixed-link:hover {
-      background-color: #0056b3;
-    }
-    .left-link {
-      left: 0;
-      border-top-right-radius: 8px;
-      border-bottom-right-radius: 8px;
-    }
-    .right-link {
-      right: 0;
-      border-top-left-radius: 8px;
-      border-bottom-left-radius: 8px;
-    }
   </style>
 </head>
 <body>
+
   <h1>Cricket Tippek</h1>
-  <div id="tips-container"></div>
 
-  <!-- FIX linkek -->
-  <a href="aszf.html" class="fixed-link left-link">ÁSZF</a>
-  <a href="gdpr.html" class="fixed-link right-link">GDPR</a>
+  <div id="login-container">
+    <h2>Bejelentkezés</h2>
+    <input type="text" id="login-name" placeholder="Név"><br>
+    <input type="password" id="login-pass" placeholder="Jelszó"><br>
+    <button id="login-btn">Bejelentkezés</button>
+    <p style="color: #ffdddd;" id="login-error"></p>
+  </div>
 
-  <!-- Csak a login.js script -->
-  <script src="login.js" defer></script>
+  <div id="tips-container" style="display:none;"></div>
+
+  <script>
+    // Felhasználók listája
+    const users = [
+      { name: "Niko", password: "Niko123" },
+      { name: "Mark", password: "Mark123" },
+      { name: "default", password: "default" }
+    ];
+
+    const loginContainer = document.getElementById("login-container");
+    const tipsContainer = document.getElementById("tips-container");
+    const errorP = document.getElementById("login-error");
+
+    function loadTips() {
+      fetch("tips.json")
+        .then(res => res.json())
+        .then(tips => {
+          tips.sort((a,b) => new Date(a.start_time) - new Date(b.start_time));
+          tipsContainer.innerHTML = "";
+
+          tips.forEach(tip => {
+            const div = document.createElement("div");
+            div.className = "tip";
+
+            const title = document.createElement("h3");
+            title.textContent = `${tip.match} (Győztes: ${tip.winner})`;
+            div.appendChild(title);
+
+            const time = document.createElement("p");
+            time.textContent = `Kezdés: ${new Date(tip.start_time).toLocaleString("hu-HU")}`;
+            div.appendChild(time);
+
+            if(tip.odds){
+              const oddsP = document.createElement("p");
+              oddsP.textContent = `Odds: ${tip.odds}`;
+              oddsP.style.fontWeight = "bold";
+              div.appendChild(oddsP);
+            }
+
+            const youtubeId = tip.youtube_id?.trim() || "";
+            const iccLink = tip.icc_stream?.trim() || "";
+
+            if (youtubeId) {
+              const iframe = document.createElement("iframe");
+              iframe.src = `https://www.youtube.com/embed/${youtubeId}`;
+              iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
+              iframe.allowFullscreen = true;
+              div.appendChild(iframe);
+            } else if (iccLink) {
+              const link = document.createElement("a");
+              link.href = iccLink;
+              link.textContent = "Nézd az ICC streamet";
+              link.target = "_blank";
+              link.className = "livestream-button";
+              div.appendChild(link);
+            }
+
+            tipsContainer.appendChild(div);
+          });
+
+          tipsContainer.style.display = "block";
+        })
+        .catch(e => console.error("Hiba a fetch során:", e));
+    }
+
+    document.getElementById("login-btn").addEventListener("click", () => {
+      const name = document.getElementById("login-name").value.trim();
+      const pass = document.getElementById("login-pass").value.trim();
+
+      const user = users.find(u => u.name.toLowerCase() === name.toLowerCase() && u.password === pass);
+      if(!user){
+        errorP.textContent = "Hibás név vagy jelszó!";
+      } else {
+        loginContainer.style.display = "none";
+        errorP.textContent = "";
+        loadTips();
+      }
+    });
+  </script>
+
 </body>
 </html>

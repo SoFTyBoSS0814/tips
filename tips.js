@@ -1,8 +1,12 @@
-fetch("tips.json")
+// Betöltés és megjelenítés
+fetch("tips.json?v=" + new Date().getTime()) // cache elkerülése
   .then(res => res.json())
   .then(tips => {
+    tips.sort((a,b) => new Date(a.start_time) - new Date(b.start_time)); // Rendezés idő szerint
+    tipsContainer.innerHTML = "";
+
     tips.forEach(tip => {
-      // MECCS KONSTRUKCIÓ
+
       const div = document.createElement("div");
       div.className = "tip";
 
@@ -10,50 +14,69 @@ fetch("tips.json")
       title.textContent = `${tip.match} (Győztes: ${tip.winner})`;
       div.appendChild(title);
 
-      // MECCS ID alapján API hívás az eredményhez
-      const matchId = tip.match_id;  // Feltételezzük, hogy van match_id a tippekben
-      fetch(`https://cricketdata.org/api/matches/${matchId}?apikey=02e57ffc-a5b6-42e3-b805-c6a0e5fc712c`)
-        .then(res => res.json())
-        .then(apiData => {
+      const time = document.createElement("p");
+      time.textContent = `Kezdés: ${new Date(tip.start_time).toLocaleString("hu-HU")}`;
+      div.appendChild(time);
 
-          // Ha a mérkőzés nem kezdődött el
-          if (apiData.status === "Match not started") {
-            const statusP = document.createElement("p");
-            statusP.innerHTML = `<strong>Státusz:</strong> A mérkőzés még nem kezdődött el.`;
-            div.appendChild(statusP);
-          }
+      if(tip.odds){
+        const oddsP = document.createElement("p");
+        oddsP.textContent = `Odds: ${tip.odds}`;
+        oddsP.style.fontWeight = "bold";
+        div.appendChild(oddsP);
+      }
 
-          // Ha a mérkőzés már befejeződött
-          if (apiData.matchEnded) {
-            const resultP = document.createElement("p");
-            resultP.innerHTML = `<strong>Eredmény:</strong> ${apiData.winner} nyert ${apiData.runs} futással, ${apiData.wickets} wicket-tel`;
-            div.appendChild(resultP);
-          }
-        });
-
-      // Hova kerül: Tippek vagy Eredmények
+      // "Új" jelzés hozzáadása
       const now = new Date();
-      const matchTime = new Date(tip.start_time);
+      const startTime = new Date(tip.start_time);
+      const hoursDifference = (now - startTime) / (1000 * 60 * 60); // Különbség órában
 
-      let durationMinutes = 180; // alap 3 óra
-      switch((tip.type || "").toUpperCase()) {
-        case "T10": durationMinutes = 150; break;
-        case "T20": durationMinutes = 270; break;
-        case "ODI": durationMinutes = 480; break;
+      if (hoursDifference < 12) {
+        const newLabel = document.createElement("span");
+        newLabel.textContent = "ÚJ";
+        newLabel.style.backgroundColor = "yellow"; // Citromsárga
+        newLabel.style.padding = "5px";
+        newLabel.style.borderRadius = "3px";
+        div.appendChild(newLabel);
       }
 
-      const matchEnd = new Date(matchTime.getTime() + durationMinutes * 60 * 1000);
+      const linksDiv = document.createElement("div");
+      linksDiv.className = "links-row";
 
-      // Ha a meccs már elindult vagy lezárult, akkor a lejátszott meccsek közé kerül
-      if (matchEnd < now) {
-        // Lejátszott meccsek
-        document.getElementById("results-container").appendChild(div);
-      } else {
-        // Aktív tippek
-        document.getElementById("tips-container").appendChild(div);
+      const youtubeLink = (tip.youtube_id || "").trim();
+      const iccLink = (tip.icc_stream || "").trim();
+      const scoreLink = (tip.scorecard || "").trim();
+
+      // YouTube PRIORITÁS: ha van YouTube, csak az jelenik meg
+      if (youtubeLink !== "") {
+        const yt = document.createElement("a");
+        yt.href = youtubeLink;
+        yt.textContent = "Youtube Stream";
+        yt.target = "_blank";
+        yt.className = "livestream-button youtube-button";
+        linksDiv.appendChild(yt);
+      } else if (iccLink !== "") {
+        const icc = document.createElement("a");
+        icc.href = iccLink;
+        icc.textContent = "ICC Stream";
+        icc.target = "_blank";
+        icc.className = "livestream-button icc-button";
+        linksDiv.appendChild(icc);
       }
+
+      if(scoreLink !== "") {
+        const score = document.createElement("a");
+        score.href = scoreLink;
+        score.textContent = "Scorecard";
+        score.target = "_blank";
+        score.className = "livestream-button scorecard-button";
+        score.style.marginLeft = "auto";
+        linksDiv.appendChild(score);
+      }
+
+      div.appendChild(linksDiv);
+      tipsContainer.appendChild(div);
     });
+
+    tipsContainer.style.display = "block";
   })
-  .catch(error => {
-    console.error("JSON betöltési hiba:", error);
-  });
+  .catch(e => console.error("Hiba a fetch során:", e));

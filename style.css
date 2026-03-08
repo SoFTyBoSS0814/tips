@@ -1,183 +1,108 @@
-/* ALAP OLDAL */
-
+/* Alap stílusok a bodyhoz */
 body {
   font-family: Arial, sans-serif;
-  background: rgb(56, 87, 101);
-  color: #f0f0f0;
-  margin: 0;
+  max-width: 900px;
+  margin: 0 auto;
   padding: 20px;
-  min-height: 100vh;
+  background-color: #f5f5f5;
+  color: #333;
 }
 
+/* Fő cím */
 h1 {
   text-align: center;
+  color: #1a73e8;
+}
+
+/* Tipp doboz */
+.tip {
+  background-color: #fff;
+  padding: 15px;
   margin-bottom: 20px;
-  text-shadow: 1px 1px 3px #000;
-}
-
-
-/* LOGIN PANEL */
-
-#login-container {
-  max-width: 400px;
-  margin: 0 auto 10px auto;
-  padding: 20px;
-  background: rgba(0,0,0,0.3);
   border-radius: 8px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.5);
-  text-align: center;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 
-#login-container input {
-  padding: 8px;
-  margin: 5px;
-  width: 80%;
-  border-radius: 4px;
-  border: none;
-  font-size: 16px;
+/* Tipp cím */
+.tip h3 {
+  margin-top: 0;
+  color: #222;
 }
 
-#login-container button {
-  padding: 10px 20px;
-  margin-top: 10px;
+/* Kezdési idő és egyéb szövegek */
+.tip p {
+  font-size: 14px;
+}
+
+/* Új címke stílus */
+.new-tag {
+  background-color: #FFEB3B; /* Citromsárga szín */
+  color: white;
+  font-size: 14px;
+  font-weight: bold;
+  padding: 5px 10px;
   border-radius: 5px;
+  margin-left: 10px;
+  animation: flash 1s infinite alternate; /* Animáció */
+}
+
+/* YouTube iframe reszponzív */
+.tip iframe {
+  width: 100%;
+  max-width: 560px;
+  height: 315px;
+  margin-top: 10px;
   border: none;
+}
+
+/* ICC stream gomb */
+.stream-button {
+  display: inline-block;
+  margin-top: 10px;
+  padding: 8px 12px;
+  background-color: #1a73e8;
+  color: white;
+  text-decoration: none;
+  border-radius: 5px;
+  transition: background-color 0.2s;
+}
+
+/* Gomb hover effekt */
+.stream-button:hover {
+  background-color: #155ab6;
+}
+
+/* Eredmény gomb stílusa */
+.result-button {
+  display: inline-block;
+  margin-top: 10px;
+  padding: 8px 12px;
   background-color: #28a745;
   color: white;
-  font-weight: bold;
-  cursor: pointer;
+  text-decoration: none;
+  border-radius: 5px;
+  transition: background-color 0.2s;
 }
 
-#login-container button:hover {
+.result-button:hover {
   background-color: #218838;
 }
 
-#login-error {
-  color: red;
-  margin-top: 8px;
-}
-
-
-/* ÁSZF / GDPR */
-
-#footer-links-login {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 10px;
-  padding: 0 10px;
-}
-
-#footer-links-login a {
-  color: #f0f0f0;
-  background: rgba(0,0,0,0.4);
-  padding: 6px 12px;
-  border-radius: 5px;
-  text-decoration: none;
-  font-weight: bold;
-  box-shadow: 1px 1px 3px #000;
-}
-
-#footer-links-login a:hover {
-  background: rgba(0,0,0,0.6);
-}
-
-
-/* TIPPEK */
-
-#tips-container {
-  max-width: 700px;
-  margin: 0 auto;
-}
-
-.tip {
-  background: rgba(0,0,0,0.25);
-  border-radius: 8px;
-  padding: 15px;
-  margin-bottom: 20px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.5);
-}
-
-.tip h3 {
-  margin-top: 0;
-  text-shadow: 1px 1px 2px #000;
-}
-
-.tip p {
-  text-shadow: 1px 1px 2px #000;
-}
-
-
-/* GOMBOK */
-
-.livestream-button {
-  display: inline-block;
-  padding: 8px 14px;
-  border-radius: 5px;
-  font-weight: bold;
-  text-decoration: none;
-  color: white;
-  transition: 0.3s;
-}
-
-
-/* YOUTUBE GOMB */
-
-.youtube-button {
-  background-color: #FF0000;
-}
-
-.youtube-button:hover {
-  background-color: #cc0000;
-}
-
-
-/* ICC GOMB */
-
-.icc-button {
-  background-color: #007bff;
-}
-
-.icc-button:hover {
-  background-color: #0056b3;
-}
-
-
-/* SCORECARD GOMB */
-
-.scorecard-button {
-  background-color: #28a745;
-}
-
-.scorecard-button:hover {
-  background-color: #1e7e34;
-}
-
-
-/* LINK SOR */
-
-.links-row {
-  display: flex;
-  align-items: center;
-  margin-top: 10px;
-  gap: 10px;
-}
-
-
-/* MOBIL NÉZET */
-
+/* Mobil optimalizálás */
 @media (max-width: 600px) {
-
-  body {
-    padding: 10px;
+  .tip iframe {
+    height: 200px;
   }
+}
 
-  .tip {
-    padding: 12px;
+@keyframes flash {
+  0% {
+    background-color: #FFEB3B;
   }
-
-  .livestream-button {
-    padding: 7px 10px;
-    font-size: 14px;
+  50% {
+    background-color: #FFDA00; /* Kicsit erősebb citromsárga */
   }
-
+  100% {
+    background-color: #FFEB3B;
+  }
 }

@@ -12,6 +12,7 @@
 
 <h1>Krikett Tippek / Predictions</h1>
 
+<!-- Bejelentkezési felület -->
 <div id="login-container">
   <h2>Bejelentkezés</h2>
   <input type="text" id="login-name" placeholder="Név"><br>
@@ -25,127 +26,126 @@
   </div>
 </div>
 
-<!-- Tipp lista -->
+<!-- Tipp dobozok megjelenítése -->
 <div id="tips-container" style="display:none;"></div>
 
 <!-- JavaScript -->
 <script>
-  // Felhasználói bejelentkezési logika
-  const users = [
-    { name: "Mark", password: "Mark123" }
-  ];
+const users = [
+  { name: "Mark", password: "Mark123" }
+];
 
-  const loginContainer = document.getElementById("login-container");
-  const tipsContainer = document.getElementById("tips-container");
-  const errorP = document.getElementById("login-error");
+const loginContainer = document.getElementById("login-container");
+const tipsContainer = document.getElementById("tips-container");
+const errorP = document.getElementById("login-error");
 
-  function loadTips() {
-    fetch("tips.json?v=" + new Date().getTime()) // Cache elkerülése
-      .then(res => res.json())
-      .then(tips => {
-        tips.sort((a, b) => new Date(a.start_time) - new Date(b.start_time));
-        tipsContainer.innerHTML = "";
+function loadTips() {
+  fetch("tips.json?v=" + new Date().getTime()) // cache elkerülése
+    .then(res => res.json())
+    .then(tips => {
+      tips.sort((a,b) => new Date(a.start_time) - new Date(b.start_time));
+      tipsContainer.innerHTML = "";
 
-        tips.forEach(tip => {
-          const div = document.createElement("div");
-          div.className = "tip";
+      tips.forEach(tip => {
 
-          const title = document.createElement("h3");
-          title.textContent = `${tip.match} (Győztes: ${tip.winner})`;
-          div.appendChild(title);
+        const div = document.createElement("div");
+        div.className = "tip";
 
-          const time = document.createElement("p");
-          time.textContent = `Kezdés: ${new Date(tip.start_time).toLocaleString("hu-HU")}`;
-          div.appendChild(time);
+        const title = document.createElement("h3");
+        title.textContent = `${tip.match} (Győztes: ${tip.winner})`;
+        div.appendChild(title);
 
-          if (tip.odds) {
-            const oddsP = document.createElement("p");
-            oddsP.textContent = `Odds: ${tip.odds}`;
-            oddsP.style.fontWeight = "bold";
-            div.appendChild(oddsP);
-          }
+        const time = document.createElement("p");
+        time.textContent = `Kezdés: ${new Date(tip.start_time).toLocaleString("hu-HU")}`;
+        div.appendChild(time);
 
-          // "Új" jelző hozzáadása 12 óráig
-          const now = new Date();
-          const startTime = new Date(tip.start_time);
-          const hoursDifference = (now - startTime) / (1000 * 60 * 60); // Különbség órában
+        if(tip.odds){
+          const oddsP = document.createElement("p");
+          oddsP.textContent = `Odds: ${tip.odds}`;
+          oddsP.style.fontWeight = "bold";
+          div.appendChild(oddsP);
+        }
 
-          if (hoursDifference < 12) {
-            const newLabel = document.createElement("span");
-            newLabel.textContent = "ÚJ";
-            newLabel.style.backgroundColor = "yellow"; // Citromsárga
-            newLabel.style.padding = "5px";
-            newLabel.style.borderRadius = "3px";
-            div.appendChild(newLabel);
-          }
+        const linksDiv = document.createElement("div");
+        linksDiv.className = "links-row";
 
-          const linksDiv = document.createElement("div");
-          linksDiv.className = "links-row";
+        const youtubeLink = (tip.youtube_id || "").trim();
+        const iccLink = (tip.icc_stream || "").trim();
+        const scoreLink = (tip.scorecard || "").trim();
 
-          const youtubeLink = (tip.youtube_id || "").trim();
-          const iccLink = (tip.icc_stream || "").trim();
-          const scoreLink = (tip.scorecard || "").trim();
+        // YouTube PRIORITÁS: ha van YouTube, csak az jelenik meg
+        if (youtubeLink !== "") {
+          const yt = document.createElement("a");
+          yt.href = youtubeLink;
+          yt.textContent = "Youtube Stream";
+          yt.target = "_blank";
+          yt.className = "livestream-button youtube-button";
+          linksDiv.appendChild(yt);
+        } else if (iccLink !== "") {
+          const icc = document.createElement("a");
+          icc.href = iccLink;
+          icc.textContent = "ICC Stream";
+          icc.target = "_blank";
+          icc.className = "livestream-button icc-button";
+          linksDiv.appendChild(icc);
+        }
 
-          if (youtubeLink !== "") {
-            const yt = document.createElement("a");
-            yt.href = youtubeLink;
-            yt.textContent = "Youtube Stream";
-            yt.target = "_blank";
-            yt.className = "livestream-button youtube-button";
-            linksDiv.appendChild(yt);
-          } else if (iccLink !== "") {
-            const icc = document.createElement("a");
-            icc.href = iccLink;
-            icc.textContent = "ICC Stream";
-            icc.target = "_blank";
-            icc.className = "livestream-button icc-button";
-            linksDiv.appendChild(icc);
-          }
+        if(scoreLink !== "") {
+          const score = document.createElement("a");
+          score.href = scoreLink;
+          score.textContent = "Scorecard";
+          score.target = "_blank";
+          score.className = "livestream-button scorecard-button";
+          score.style.marginLeft = "auto";
+          linksDiv.appendChild(score);
+        }
 
-          if (scoreLink !== "") {
-            const score = document.createElement("a");
-            score.href = scoreLink;
-            score.textContent = "Scorecard";
-            score.target = "_blank";
-            score.className = "livestream-button scorecard-button";
-            score.style.marginLeft = "auto";
-            linksDiv.appendChild(score);
-          }
+        // ÚJ felirat hozzáadása, ha a meccs kezdete most történt
+        const now = new Date();
+        const matchTime = new Date(tip.start_time);
 
-          div.appendChild(linksDiv);
-          tipsContainer.appendChild(div);
-        });
+        // Ha a meccs kezdete 12 órán belül van, akkor "ÚJ" jelzőt adunk hozzá
+        if (matchTime > now && (matchTime - now) <= 12 * 60 * 60 * 1000) {
+          const newLabel = document.createElement("div");
+          newLabel.className = "new-label";
+          newLabel.textContent = "ÚJ";
+          div.appendChild(newLabel);
+        }
 
-        tipsContainer.style.display = "block";
-      })
-      .catch(e => console.error("Hiba a fetch során:", e));
+        div.appendChild(linksDiv);
+        tipsContainer.appendChild(div);
+      });
+
+      tipsContainer.style.display = "block";
+    })
+    .catch(e => console.error("Hiba a fetch során:", e));
+}
+
+// LOGIN LOGIKA
+document.getElementById("login-btn").addEventListener("click", () => {
+  const name = document.getElementById("login-name").value.trim();
+  const pass = document.getElementById("login-pass").value.trim();
+
+  const user = users.find(u =>
+    u.name.toLowerCase() === name.toLowerCase() &&
+    u.password === pass
+  );
+
+  if(!user){
+    errorP.textContent = "Hibás felhasználónév/jelszó! Jelszóemlékeztetőt kérj DC-n!";
+  } else {
+    loginContainer.style.display = "none";
+    errorP.textContent = "";
+    loadTips();
   }
+});
 
-  // LOGIN LOGIKA
-  document.getElementById("login-btn").addEventListener("click", () => {
-    const name = document.getElementById("login-name").value.trim();
-    const pass = document.getElementById("login-pass").value.trim();
-
-    const user = users.find(u =>
-      u.name.toLowerCase() === name.toLowerCase() &&
-      u.password === pass
-    );
-
-    if (!user) {
-      errorP.textContent = "Hibás felhasználónév/jelszó! Jelszóemlékeztetőt kérj DC-n!";
-    } else {
-      loginContainer.style.display = "none";
-      errorP.textContent = "";
-      loadTips();
-    }
-  });
-
-  // ENTER-rel login
-  document.getElementById("login-pass").addEventListener("keydown", (e) => {
-    if (e.key === "Enter") {
-      document.getElementById("login-btn").click();
-    }
-  });
+// ENTER-rel login
+document.getElementById("login-pass").addEventListener("keydown", (e) => {
+  if(e.key === "Enter"){
+    document.getElementById("login-btn").click();
+  }
+});
 </script>
 
 </body>

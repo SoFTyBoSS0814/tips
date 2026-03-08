@@ -38,97 +38,108 @@ const tipsContainer = document.getElementById("tips-container");
 const resultsContainer = document.getElementById("results-container");
 const errorP = document.getElementById("login-error");
 
+// A tippek betöltése és megjelenítése az API-ból
 function loadTips() {
-  fetch("https://cricketdata.org/api/v1/currentMatches?apikey=02e57ffc-a5b6-42e3-b805-c6a0e5fc712c") // API hívás
+  const matchId = "62544eaa-507d-4263-91b8-0b31b43e9f3d";  // A konkrét mérkőzés ID-je
+
+  fetch(`https://cricketdata.org/api/v1/matches/${matchId}?apikey=02e57ffc-a5b6-42e3-b805-c6a0e5fc712c`)
     .then(res => res.json())
     .then(data => {
-      data.matches.sort((a,b) => new Date(a.start_time) - new Date(b.start_time));
+      console.log("API válasz:", data);  // Debugging: Megnézzük, hogy jön-e adat az API-ból
 
-      tipsContainer.innerHTML = "";
-      resultsContainer.innerHTML = "";
+      if (!data || !data.match) {
+        console.log("Nincs elérhető mérkőzés.");
+        return; // Ha nincs mérkőzés, kilépünk
+      }
 
-      data.matches.forEach(tip => {
-        const div = document.createElement("div");
-        div.className = "tip";
+      const tip = data.match;  // Az egyes mérkőzés adatai
 
-        const title = document.createElement("h3");
-        title.textContent = `${tip.match} (${tip.winner || "Nincs eredmény"})`;
-        div.appendChild(title);
+      tipsContainer.innerHTML = ""; // Ürítjük a konténert
+      resultsContainer.innerHTML = ""; // Ürítjük az eredményeket is
 
-        const time = document.createElement("p");
-        time.textContent = `Kezdés: ${new Date(tip.start_time).toLocaleString("hu-HU")}`;
-        div.appendChild(time);
+      const div = document.createElement("div");
+      div.className = "tip";
 
-        if(tip.odds){
-          const oddsP = document.createElement("p");
-          oddsP.textContent = `Odds: ${tip.odds}`;
-          oddsP.style.fontWeight = "bold";
-          div.appendChild(oddsP);
-        }
+      const title = document.createElement("h3");
+      title.textContent = `${tip.match} (${tip.winner || "Nincs eredmény"})`;
+      div.appendChild(title);
 
-        const linksDiv = document.createElement("div");
-        linksDiv.className = "links-row";
+      const time = document.createElement("p");
+      time.textContent = `Kezdés: ${new Date(tip.start_time).toLocaleString("hu-HU")}`;
+      div.appendChild(time);
 
-        const youtubeLink = (tip.youtube_id || "").trim();
-        const iccLink = (tip.icc_stream || "").trim();
-        const scoreLink = (tip.scorecard || "").trim();
+      if(tip.odds){
+        const oddsP = document.createElement("p");
+        oddsP.textContent = `Odds: ${tip.odds}`;
+        oddsP.style.fontWeight = "bold";
+        div.appendChild(oddsP);
+      }
 
-        // YouTube PRIORITÁS: ha van YouTube, csak az jelenik meg
-        if (youtubeLink !== "") {
-          const yt = document.createElement("a");
-          yt.href = youtubeLink;
-          yt.textContent = "Youtube Stream";
-          yt.target = "_blank";
-          yt.className = "livestream-button youtube-button";
-          linksDiv.appendChild(yt);
-        } else if (iccLink !== "") {
-          const icc = document.createElement("a");
-          icc.href = iccLink;
-          icc.textContent = "ICC Stream";
-          icc.target = "_blank";
-          icc.className = "livestream-button icc-button";
-          linksDiv.appendChild(icc);
-        }
+      const linksDiv = document.createElement("div");
+      linksDiv.className = "links-row";
 
-        if(scoreLink !== "") {
-          const score = document.createElement("a");
-          score.href = scoreLink;
-          score.textContent = "Scorecard";
-          score.target = "_blank";
-          score.className = "livestream-button scorecard-button";
-          score.style.marginLeft = "auto";
-          linksDiv.appendChild(score);
-        }
+      const youtubeLink = (tip.youtube_id || "").trim();
+      const iccLink = (tip.icc_stream || "").trim();
+      const scoreLink = (tip.scorecard || "").trim();
 
-        div.appendChild(linksDiv);
+      // YouTube PRIORITÁS: ha van YouTube, csak az jelenik meg
+      if (youtubeLink !== "") {
+        const yt = document.createElement("a");
+        yt.href = youtubeLink;
+        yt.textContent = "Youtube Stream";
+        yt.target = "_blank";
+        yt.className = "livestream-button youtube-button";
+        linksDiv.appendChild(yt);
+      } else if (iccLink !== "") {
+        const icc = document.createElement("a");
+        icc.href = iccLink;
+        icc.textContent = "ICC Stream";
+        icc.target = "_blank";
+        icc.className = "livestream-button icc-button";
+        linksDiv.appendChild(icc);
+      }
 
-        // Eredmény megjelenítése, ha a meccs befejeződött
-        const now = new Date();
-        const matchTime = new Date(tip.start_time);
+      if(scoreLink !== "") {
+        const score = document.createElement("a");
+        score.href = scoreLink;
+        score.textContent = "Scorecard";
+        score.target = "_blank";
+        score.className = "livestream-button scorecard-button";
+        score.style.marginLeft = "auto";
+        linksDiv.appendChild(score);
+      }
 
-        let durationMinutes = 180;
-        switch((tip.type || "").toUpperCase()){
-          case "T10": durationMinutes = 150; break;
-          case "T20": durationMinutes = 270; break;
-          case "ODI": durationMinutes = 480; break;
-        }
+      div.appendChild(linksDiv);
 
-        const matchEnd = new Date(matchTime.getTime() + durationMinutes * 60 * 1000);
+      // Eredmény megjelenítése, ha a meccs befejeződött
+      const now = new Date();
+      const matchTime = new Date(tip.start_time);
 
-        if(tip.status === "completed" && tip.runs !== undefined && tip.wickets !== undefined){
-          const resultP = document.createElement("p");
-          resultP.innerHTML = `<strong>Eredmény:</strong> ${tip.winner} nyert ${tip.runs} futással, ${tip.wickets} wicket-tel`;
-          div.appendChild(resultP);
-        }
+      let durationMinutes = 180;
+      switch((tip.type || "").toUpperCase()){
+        case "T10": durationMinutes = 150; break;
+        case "T20": durationMinutes = 270; break;
+        case "ODI": durationMinutes = 480; break;
+      }
 
-        const container = matchEnd < now ? resultsContainer : tipsContainer;
-        container.appendChild(div);
-      });
+      const matchEnd = new Date(matchTime.getTime() + durationMinutes * 60 * 1000);
+
+      if(tip.status === "completed" && tip.runs !== undefined && tip.wickets !== undefined){
+        const resultP = document.createElement("p");
+        resultP.innerHTML = `<strong>Eredmény:</strong> ${tip.winner} nyert ${tip.runs} futással, ${tip.wickets} wicket-tel`;
+        div.appendChild(resultP);
+      }
+
+      // Ha a meccs befejeződött, eredményeket mutatunk, különben tippeket
+      const container = matchEnd < now ? resultsContainer : tipsContainer;
+      container.appendChild(div);
 
       tipsContainer.style.display = "block";
       resultsContainer.style.display = "block";
     })
-    .catch(e => console.error("API fetch hiba:", e));
+    .catch(e => {
+      console.error("API fetch hiba:", e);
+    });
 }
 
 // LOGIN LOGIKA

@@ -4,115 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Krikett Tippek / Predictions</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: rgb(56, 87, 101);
-      color: #f0f0f0;
-      margin: 0;
-      padding: 20px;
-      min-height: 100vh;
-      position: relative;
-    }
 
-    h1 {
-      text-align: center;
-      margin-bottom: 20px;
-      text-shadow: 1px 1px 3px #000;
-    }
-
-    #login-container {
-      max-width: 400px;
-      margin: 0 auto 10px auto;
-      padding: 20px;
-      background: rgba(0,0,0,0.3);
-      border-radius: 8px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.5);
-      text-align: center;
-    }
-
-    #login-container input {
-      padding: 8px;
-      margin: 5px;
-      width: 80%;
-      border-radius: 4px;
-      border: none;
-      font-size: 16px;
-    }
-
-    #login-container button {
-      padding: 10px 20px;
-      margin-top: 10px;
-      border-radius: 5px;
-      border: none;
-      background-color: #28a745;
-      color: #fff;
-      font-weight: bold;
-      cursor: pointer;
-    }
-
-    #login-container button:hover {
-      background-color: #218838;
-    }
-
-    #login-error {
-      color: red;
-      margin-top: 8px;
-    }
-
-    #footer-links-login {
-      display: flex;
-      justify-content: space-between;
-      margin-top: 10px;
-      padding: 0 10px;
-    }
-
-    #footer-links-login a {
-      color: #f0f0f0;
-      background: rgba(0,0,0,0.4);
-      padding: 6px 12px;
-      border-radius: 5px;
-      text-decoration: none;
-      font-weight: bold;
-      box-shadow: 1px 1px 3px #000;
-    }
-
-    #footer-links-login a:hover {
-      background: rgba(0,0,0,0.6);
-    }
-
-    #tips-container {
-      max-width: 700px;
-      margin: 0 auto;
-    }
-
-    .tip {
-      background: rgba(0,0,0,0.2);
-      border-radius: 8px;
-      padding: 15px;
-      margin-bottom: 20px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.5);
-    }
-
-    .tip h3, .tip p {
-      text-shadow: 1px 1px 2px #000;
-    }
-
-    .livestream-button {
-      display: inline-block;
-      padding: 8px 14px;
-      background-color: #007bff;
-      color: white;
-      text-decoration: none;
-      border-radius: 5px;
-      font-weight: bold;
-      transition: background-color 0.3s ease;
-    }
-
-    .livestream-button:hover {
-      background-color: #0056b3;
-    }
-  </style>
+  <!-- CSS betöltése -->
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
@@ -143,10 +37,9 @@ const tipsContainer = document.getElementById("tips-container");
 const errorP = document.getElementById("login-error");
 
 function loadTips() {
-  fetch("tips.json")
+  fetch("tips.json?v=" + new Date().getTime()) // cache elkerülése
     .then(res => res.json())
     .then(tips => {
-
       tips.sort((a,b) => new Date(a.start_time) - new Date(b.start_time));
       tipsContainer.innerHTML = "";
 
@@ -171,54 +64,50 @@ function loadTips() {
         }
 
         const linksDiv = document.createElement("div");
-        linksDiv.style.display = "flex";
-        linksDiv.style.alignItems = "center";
-        linksDiv.style.marginTop = "10px";
+        linksDiv.className = "links-row";
 
-        const youtubeLink = tip.youtube_id?.trim() || "";
-        const iccLink = tip.icc_stream?.trim() || "";
+        const youtubeLink = (tip.youtube_id || "").trim();
+        const iccLink = (tip.icc_stream || "").trim();
+        const scoreLink = (tip.scorecard || "").trim();
 
-        if (youtubeLink) {
+        // YouTube PRIORITÁS: ha van YouTube, csak az jelenik meg
+        if (youtubeLink !== "") {
           const yt = document.createElement("a");
           yt.href = youtubeLink;
           yt.textContent = "Youtube Stream";
           yt.target = "_blank";
-          yt.className = "livestream-button";
+          yt.className = "livestream-button youtube-button";
           linksDiv.appendChild(yt);
-        }
-
-        if (iccLink) {
+        } else if (iccLink !== "") {
           const icc = document.createElement("a");
           icc.href = iccLink;
           icc.textContent = "ICC Stream";
           icc.target = "_blank";
-          icc.className = "livestream-button";
-          icc.style.marginLeft = "10px";
+          icc.className = "livestream-button icc-button";
           linksDiv.appendChild(icc);
         }
 
-        const scoreLink = tip.scorecard?.trim() || "";
-        if(scoreLink){
+        if(scoreLink !== "") {
           const score = document.createElement("a");
           score.href = scoreLink;
           score.textContent = "Scorecard";
           score.target = "_blank";
-          score.className = "livestream-button";
+          score.className = "livestream-button scorecard-button";
           score.style.marginLeft = "auto";
           linksDiv.appendChild(score);
         }
 
         div.appendChild(linksDiv);
         tipsContainer.appendChild(div);
-
       });
 
       tipsContainer.style.display = "block";
-    });
+    })
+    .catch(e => console.error("Hiba a fetch során:", e));
 }
 
+// LOGIN LOGIKA
 document.getElementById("login-btn").addEventListener("click", () => {
-
   const name = document.getElementById("login-name").value.trim();
   const pass = document.getElementById("login-pass").value.trim();
 
@@ -236,6 +125,7 @@ document.getElementById("login-btn").addEventListener("click", () => {
   }
 });
 
+// ENTER-rel login
 document.getElementById("login-pass").addEventListener("keydown", (e) => {
   if(e.key === "Enter"){
     document.getElementById("login-btn").click();

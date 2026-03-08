@@ -112,142 +112,136 @@
     .livestream-button:hover {
       background-color: #0056b3;
     }
-
-    iframe {
-      margin-top: 15px;
-      border-radius: 8px;
-      width: 100%;
-      max-width: 560px;
-      height: 315px;
-      border: none;
-      display: block;
-    }
   </style>
 </head>
 <body>
 
-  <h1>Krikett Tippek/Predictions</h1>
+<h1>Krikett Tippek / Predictions</h1>
 
-  <div id="login-container">
-    <h2>Bejelentkezés</h2>
-    <input type="text" id="login-name" placeholder="Név"><br>
-    <input type="password" id="login-pass" placeholder="Jelszó"><br>
-    <button id="login-btn">Bejelentkezés</button>
-    <p id="login-error"></p>
+<div id="login-container">
+  <h2>Bejelentkezés</h2>
+  <input type="text" id="login-name" placeholder="Név"><br>
+  <input type="password" id="login-pass" placeholder="Jelszó"><br>
+  <button id="login-btn">Bejelentkezés</button>
+  <p id="login-error"></p>
 
-    <!-- ÁSZF és GDPR közvetlenül login alatt -->
-    <div id="footer-links-login">
-      <a href="aszf.html" target="_blank">ÁSZF</a>
-      <a href="gdpr.html" target="_blank">GDPR</a>
-    </div>
+  <div id="footer-links-login">
+    <a href="aszf.html" target="_blank">ÁSZF</a>
+    <a href="gdpr.html" target="_blank">GDPR</a>
   </div>
+</div>
 
-  <div id="tips-container" style="display:none;"></div>
+<div id="tips-container" style="display:none;"></div>
 
-  <script>
-    const users = [
-      { name: "Mark", password: "Mark123" }
-    ];
+<script>
+const users = [
+  { name: "Mark", password: "Mark123" }
+];
 
-    const loginContainer = document.getElementById("login-container");
-    const tipsContainer = document.getElementById("tips-container");
-    const errorP = document.getElementById("login-error");
+const loginContainer = document.getElementById("login-container");
+const tipsContainer = document.getElementById("tips-container");
+const errorP = document.getElementById("login-error");
 
-    function loadTips() {
-      fetch("tips.json")
-        .then(res => res.json())
-        .then(tips => {
-          tips.sort((a,b) => new Date(a.start_time) - new Date(b.start_time));
-          tipsContainer.innerHTML = "";
+function loadTips() {
+  fetch("tips.json")
+    .then(res => res.json())
+    .then(tips => {
 
-          tips.forEach(tip => {
-            const div = document.createElement("div");
-            div.className = "tip";
+      tips.sort((a,b) => new Date(a.start_time) - new Date(b.start_time));
+      tipsContainer.innerHTML = "";
 
-            const title = document.createElement("h3");
-            title.textContent = `${tip.match} (Győztes: ${tip.winner})`;
-            div.appendChild(title);
+      tips.forEach(tip => {
 
-            const time = document.createElement("p");
-            time.textContent = `Kezdés: ${new Date(tip.start_time).toLocaleString("hu-HU")}`;
-            div.appendChild(time);
+        const div = document.createElement("div");
+        div.className = "tip";
 
-            if(tip.odds){
-              const oddsP = document.createElement("p");
-              oddsP.textContent = `Odds: ${tip.odds}`;
-              oddsP.style.fontWeight = "bold";
-              div.appendChild(oddsP);
-            }
+        const title = document.createElement("h3");
+        title.textContent = `${tip.match} (Győztes: ${tip.winner})`;
+        div.appendChild(title);
 
-            const linksDiv = document.createElement("div");
-            linksDiv.style.display = "flex";
-            linksDiv.style.alignItems = "center";
-            linksDiv.style.marginTop = "10px";
+        const time = document.createElement("p");
+        time.textContent = `Kezdés: ${new Date(tip.start_time).toLocaleString("hu-HU")}`;
+        div.appendChild(time);
 
-            // Bal oldal: ICC/YouTube
-            const youtubeId = tip.youtube_id?.trim() || "";
-            const iccLink = tip.icc_stream?.trim() || "";
-            if (youtubeId) {
-              const iframe = document.createElement("iframe");
-              iframe.src = `https://www.youtube.com/embed/${youtubeId}`;
-              iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
-              iframe.allowFullscreen = true;
-              div.appendChild(iframe);
-            } else if (iccLink) {
-              const link = document.createElement("a");
-              link.href = iccLink;
-              link.textContent = "ICC Stream";
-              link.target = "_blank";
-              link.className = "livestream-button";
-              linksDiv.appendChild(link);
-            }
+        if(tip.odds){
+          const oddsP = document.createElement("p");
+          oddsP.textContent = `Odds: ${tip.odds}`;
+          oddsP.style.fontWeight = "bold";
+          div.appendChild(oddsP);
+        }
 
-            // Jobb oldal: Scorecard
-            const scoreLink = tip.scorecard?.trim() || "";
-            if(scoreLink){
-              const scoreLinkEl = document.createElement("a");
-              scoreLinkEl.href = scoreLink;
-              scoreLinkEl.textContent = "Scorecard";
-              scoreLinkEl.target = "_blank";
-              scoreLinkEl.className = "livestream-button";
-              scoreLinkEl.style.marginLeft = "auto";
-              linksDiv.appendChild(scoreLinkEl);
-            }
+        const linksDiv = document.createElement("div");
+        linksDiv.style.display = "flex";
+        linksDiv.style.alignItems = "center";
+        linksDiv.style.marginTop = "10px";
 
-            div.appendChild(linksDiv);
-            tipsContainer.appendChild(div);
-          });
+        const youtubeLink = tip.youtube_id?.trim() || "";
+        const iccLink = tip.icc_stream?.trim() || "";
 
-          tipsContainer.style.display = "block";
-        })
-        .catch(e => console.error("Hiba a fetch során:", e));
-    }
+        if (youtubeLink) {
+          const yt = document.createElement("a");
+          yt.href = youtubeLink;
+          yt.textContent = "Youtube Stream";
+          yt.target = "_blank";
+          yt.className = "livestream-button";
+          linksDiv.appendChild(yt);
+        }
 
-    document.getElementById("login-btn").addEventListener("click", () => {
-      const name = document.getElementById("login-name").value.trim();
-      const pass = document.getElementById("login-pass").value.trim();
+        if (iccLink) {
+          const icc = document.createElement("a");
+          icc.href = iccLink;
+          icc.textContent = "ICC Stream";
+          icc.target = "_blank";
+          icc.className = "livestream-button";
+          icc.style.marginLeft = "10px";
+          linksDiv.appendChild(icc);
+        }
 
-      const user = users.find(u => u.name.toLowerCase() === name.toLowerCase() && u.password === pass);
-      if(!user){
-        errorP.textContent = "Hibás felhasználónév/jelszó! Jelszóemlékeztetőt kérj DC-n!";
-      } else {
-        loginContainer.style.display = "none";
-        errorP.textContent = "";
-        loadTips();
-      }
+        const scoreLink = tip.scorecard?.trim() || "";
+        if(scoreLink){
+          const score = document.createElement("a");
+          score.href = scoreLink;
+          score.textContent = "Scorecard";
+          score.target = "_blank";
+          score.className = "livestream-button";
+          score.style.marginLeft = "auto";
+          linksDiv.appendChild(score);
+        }
+
+        div.appendChild(linksDiv);
+        tipsContainer.appendChild(div);
+
+      });
+
+      tipsContainer.style.display = "block";
     });
+}
 
-    // ENTER-rel login
-    document.getElementById("login-pass").addEventListener("keydown", (e) => {
-      if(e.key === "Enter"){
-        document.getElementById("login-btn").click();
-      }
-    });
-  </script>
+document.getElementById("login-btn").addEventListener("click", () => {
+
+  const name = document.getElementById("login-name").value.trim();
+  const pass = document.getElementById("login-pass").value.trim();
+
+  const user = users.find(u =>
+    u.name.toLowerCase() === name.toLowerCase() &&
+    u.password === pass
+  );
+
+  if(!user){
+    errorP.textContent = "Hibás felhasználónév/jelszó! Jelszóemlékeztetőt kérj DC-n!";
+  } else {
+    loginContainer.style.display = "none";
+    errorP.textContent = "";
+    loadTips();
+  }
+});
+
+document.getElementById("login-pass").addEventListener("keydown", (e) => {
+  if(e.key === "Enter"){
+    document.getElementById("login-btn").click();
+  }
+});
+</script>
+
 </body>
 </html>
-
-
-
-
-

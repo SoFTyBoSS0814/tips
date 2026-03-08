@@ -1,45 +1,78 @@
-fetch("tips.json")
-  .then(res => res.json())
-  .then(tips => {
-    tips.forEach(tip => {
 
-      // MECCS KONSTRUKCIÓ
-      const div = document.createElement("div");
-      div.className = "tip";
+function loadTips() {
+  fetch("tips.json")
+    .then(res => res.json())
+    .then(tips => {
+      const container = document.getElementById("tips-container");
+      container.innerHTML = "";
+      tips.sort((a,b) => new Date(a.start_time) - new Date(b.start_time));
 
-      // TIPP CÍM: A meccs neve és győztesének kiírása
-      const title = document.createElement("h3");
-      title.textContent = `${tip.match} (Győztes: ${tip.winner})`;
-      div.appendChild(title);
+      tips.forEach(tip => {
+        const div = document.createElement("div");
+        div.className = "tip";
 
-      // MECCS ID alapján API hívás az eredményhez
-      fetch(`https://YOUR_CRICKET_API/match/${tip.match_id}?apikey=API_KEY`)
-        .then(res => res.json())
-        .then(apiData => {
-          if(apiData.status === "completed") {
-            const resultP = document.createElement("p");
-            resultP.innerHTML = `<strong>Eredmény:</strong> ${apiData.winner} nyert ${apiData.runs} futással, ${apiData.wickets} wicket-tel`;
-            div.appendChild(resultP);
-          }
-        });
+        // Meccs címe és győztes
+        const title = document.createElement("h3");
+        title.textContent = `${tip.match} (Győztes: ${tip.winner})`;
+        div.appendChild(title);
 
-      // Hova kerül: Tippek vagy Eredmények
-      const now = new Date();
-      const matchTime = new Date(tip.start_time);
+        // Kezdési idő
+        const time = document.createElement("p");
+        time.textContent = `Kezdés: ${new Date(tip.start_time).toLocaleString("hu-HU")}`;
+        div.appendChild(time);
 
-      let durationMinutes = 180; // alap 3 óra
-      switch((tip.type || "").toUpperCase()) {
-        case "T1": durationMinutes = 2; break;
-        case "T10": durationMinutes = 150; break;
-        case "T20": durationMinutes = 270; break;
-        case "ODI": durationMinutes = 480; break;
-      }
+        // Odds, ha van
+        if(tip.odds){
+          const oddsP = document.createElement("p");
+          oddsP.textContent = `Odds: ${tip.odds}`;
+          oddsP.style.fontWeight = "bold";
+          div.appendChild(oddsP);
+        }
 
-      const matchEnd = new Date(matchTime.getTime() + durationMinutes*60*1000);
-      const container = matchEnd < now ? 
-                        document.getElementById("results-container") : 
-                        document.getElementById("tips-container");
+        // Linkek konténer (flex)
+        const linksDiv = document.createElement("div");
+        linksDiv.style.display = "flex";
+        linksDiv.style.alignItems = "center";
+        linksDiv.style.marginTop = "10px";
 
-      container.appendChild(div);
-    });
-  });
+        // Bal oldali link: YouTube vagy ICC
+        const youtubeId = tip.youtube_id?.trim() || "";
+        const iccLink = tip.icc_stream?.trim() || "";
+        if (youtubeId) {
+          const iframe = document.createElement("iframe");
+          iframe.src = `https://www.youtube.com/embed/${youtubeId}`;
+          iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
+          iframe.allowFullscreen = true;
+          div.appendChild(iframe);
+        } else if (iccLink) {
+          const link = document.createElement("a");
+          link.href = iccLink;
+          link.textContent = "Nézd az ICC streamet";
+          link.target = "_blank";
+          link.className = "livestream-button";
+          linksDiv.appendChild(link);
+        }
+
+        // Jobb oldali link: Scorecard
+        const scoreLink = tip.scorecard?.trim() || "";
+        if (scoreLink) {
+          const scoreLinkEl = document.createElement("a");
+          scoreLinkEl.href = scoreLink;
+          scoreLinkEl.textContent = "Scorecard";
+          scoreLinkEl.target = "_blank";
+          scoreLinkEl.className = "livestream-button";
+          scoreLinkEl.style.marginLeft = "auto"; // jobb oldalra tolás
+          linksDiv.appendChild(scoreLinkEl);
+        }
+
+        div.appendChild(linksDiv);
+        container.appendChild(div);
+      });
+
+      container.style.display = "block";
+    })
+    .catch(e => console.error("Hiba a fetch során:", e));
+}
+
+// Azonnali futtatás, ha a felhasználó már bejelentkezett
+loadTips();

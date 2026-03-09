@@ -7,6 +7,18 @@
 
   <!-- CSS betöltése -->
   <link rel="stylesheet" href="style.css">
+  <style>
+    #login-error {
+      font-weight: bold;
+      margin-top: 10px;
+    }
+    .error {
+      color: red;
+    }
+    .success {
+      color: green;
+    }
+  </style>
 </head>
 <body>
 
@@ -17,7 +29,7 @@
   <input type="text" id="login-name" placeholder="Név"><br>
   <input type="password" id="login-pass" placeholder="Jelszó"><br>
   <button id="login-btn">Bejelentkezés</button>
-  <p id="login-error" style="color:red;"></p>
+  <p id="login-error"></p>
 
   <div id="footer-links-login">
     <a href="aszf.html" target="_blank">ÁSZF</a>
@@ -70,7 +82,6 @@ function loadTips() {
         const iccLink = (tip.icc_stream || "").trim();
         const scoreLink = (tip.scorecard || "").trim();
 
-        // YouTube PRIORITÁS: ha van YouTube, csak az jelenik meg
         if (youtubeLink !== "") {
           const yt = document.createElement("a");
           yt.href = youtubeLink;
@@ -111,24 +122,28 @@ document.getElementById("login-btn").addEventListener("click", () => {
   const name = document.getElementById("login-name").value.trim();
   const pass = document.getElementById("login-pass").value.trim();
 
-  // Megnézzük, létezik-e a felhasználónév
   const userByName = users.find(u => u.name.toLowerCase() === name.toLowerCase());
 
   if (!userByName) {
     errorP.textContent = "Ilyen felhasználónév nem létezik!";
+    errorP.className = "error";
     return;
   }
 
-  // Ha a név létezik, ellenőrizzük a jelszót
   if (userByName.password !== pass) {
     errorP.textContent = "Hibás jelszó! Jelszóemlékeztetőt kérj DC-n!";
+    errorP.className = "error";
     return;
   }
 
   // Sikeres login
-  loginContainer.style.display = "none";
-  errorP.textContent = "";
-  loadTips();
+  errorP.textContent = "Sikeres bejelentkezés! Betöltés...";
+  errorP.className = "success";
+
+  setTimeout(() => {
+    loginContainer.style.display = "none";
+    loadTips();
+  }, 800); // kis késleltetés a vizuális hatás miatt
 });
 
 // ENTER-rel login

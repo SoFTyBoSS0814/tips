@@ -2,7 +2,8 @@
 
 // Felhasználók listája, default accounttal
 const users = [
-  { name: "Mark", password: "Mark123" }
+  { name: "Mark", password: "Mark123" },
+  { name: "admin", password: "zino" }
   }
 ];
 

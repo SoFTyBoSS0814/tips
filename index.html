@@ -126,19 +126,22 @@ document.getElementById("login-btn").addEventListener("click", () => {
 
   if (!userByName) {
     errorP.textContent = "Ilyen felhasználónév nem létezik!";
-    errorP.className = "error";
+    errorP.classList.remove("success");
+    errorP.classList.add("error");
     return;
   }
 
   if (userByName.password !== pass) {
     errorP.textContent = "Hibás jelszó! Jelszóemlékeztetőt kérj DC-n!";
-    errorP.className = "error";
+    errorP.classList.remove("success");
+    errorP.classList.add("error");
     return;
   }
 
   // Sikeres login
   errorP.textContent = "Sikeres bejelentkezés! Betöltés...";
-  errorP.className = "success";
+  errorP.classList.remove("error");
+  errorP.classList.add("success");
 
   setTimeout(() => {
     loginContainer.style.display = "none";

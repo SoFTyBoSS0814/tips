@@ -17,7 +17,7 @@
   <input type="text" id="login-name" placeholder="Név"><br>
   <input type="password" id="login-pass" placeholder="Jelszó"><br>
   <button id="login-btn">Bejelentkezés</button>
-  <p id="login-error"></p>
+  <p id="login-error" style="color:red;"></p>
 
   <div id="footer-links-login">
     <a href="aszf.html" target="_blank">ÁSZF</a>
@@ -45,7 +45,6 @@ function loadTips() {
       tipsContainer.innerHTML = "";
 
       tips.forEach(tip => {
-
         const div = document.createElement("div");
         div.className = "tip";
 
@@ -112,18 +111,24 @@ document.getElementById("login-btn").addEventListener("click", () => {
   const name = document.getElementById("login-name").value.trim();
   const pass = document.getElementById("login-pass").value.trim();
 
-  const user = users.find(u =>
-    u.name.toLowerCase() === name.toLowerCase() &&
-    u.password === pass
-  );
+  // Megnézzük, létezik-e a felhasználónév
+  const userByName = users.find(u => u.name.toLowerCase() === name.toLowerCase());
 
-  if(!user){
-    errorP.textContent = "Hibás felhasználónév/jelszó! Jelszóemlékeztetőt kérj DC-n!";
-  } else {
-    loginContainer.style.display = "none";
-    errorP.textContent = "";
-    loadTips();
+  if (!userByName) {
+    errorP.textContent = "Ilyen felhasználónév nem létezik!";
+    return;
   }
+
+  // Ha a név létezik, ellenőrizzük a jelszót
+  if (userByName.password !== pass) {
+    errorP.textContent = "Hibás jelszó! Jelszóemlékeztetőt kérj DC-n!";
+    return;
+  }
+
+  // Sikeres login
+  loginContainer.style.display = "none";
+  errorP.textContent = "";
+  loadTips();
 });
 
 // ENTER-rel login
@@ -136,4 +141,3 @@ document.getElementById("login-pass").addEventListener("keydown", (e) => {
 
 </body>
 </html>
-

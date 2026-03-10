@@ -19,7 +19,7 @@
       color: green;
     }
 
-    /* Próbaidőszak info szöveg - világos sárga szín */
+    /* Próbaidőszak info szöveg */
     #trial-info {
       margin-top: 10px;
       font-weight: bold;
@@ -29,6 +29,17 @@
       color: #FF6600; /* narancssárga link */
       text-decoration: underline;
       font-weight: bold;
+    }
+
+    /* Visszaszámláló stílusa */
+    #countdown {
+      font-weight: bold;
+      color: #FFFFFF; /* fehér szöveg */
+      background-color: #FF6600; /* narancssárga doboz */
+      padding: 2px 6px;
+      border-radius: 4px;
+      margin-left: 5px;
+      font-family: monospace;
     }
   </style>
 </head>
@@ -46,7 +57,8 @@
   <!-- Próbaidőszak info -->
   <p id="trial-info">
     1 hetes próbaidőszak: 03.10 - 03.17 között! Discordon találod a logint! 
-    <a href="https://discord.gg/VunhZFjEUr" target="_blank">https://discord.gg/VunhZFjEUr</a>
+    <a href="https://discord.gg/VunhZFjEUr" target="_blank">https://discord.gg/VunhZFjEUr</a><br>
+    <span id="countdown">168:00:00</span> óra hátra
   </p>
 
   <div id="footer-links-login">
@@ -67,6 +79,44 @@ const loginContainer = document.getElementById("login-container");
 const tipsContainer = document.getElementById("tips-container");
 const errorP = document.getElementById("login-error");
 
+// LOGIN LOGIKA
+document.getElementById("login-btn").addEventListener("click", () => {
+  const name = document.getElementById("login-name").value.trim();
+  const pass = document.getElementById("login-pass").value.trim();
+
+  const userByName = users.find(u => u.name.toLowerCase() === name.toLowerCase());
+
+  if (!userByName) {
+    errorP.textContent = "Ilyen felhasználónév nem létezik!";
+    errorP.classList.remove("success");
+    errorP.classList.add("error");
+    return;
+  }
+
+  if (userByName.password !== pass) {
+    errorP.textContent = "Hibás jelszó! Jelszóemlékeztetőt kérj DC-n!";
+    errorP.classList.remove("success");
+    errorP.classList.add("error");
+    return;
+  }
+
+  errorP.textContent = "Sikeres bejelentkezés! Betöltés...";
+  errorP.classList.remove("error");
+  errorP.classList.add("success");
+
+  setTimeout(() => {
+    loginContainer.style.display = "none";
+    loadTips();
+  }, 800);
+});
+
+document.getElementById("login-pass").addEventListener("keydown", (e) => {
+  if(e.key === "Enter"){
+    document.getElementById("login-btn").click();
+  }
+});
+
+// TIPS BETÖLTÉSE
 function loadTips() {
   fetch("tips.json?v=" + new Date().getTime())
     .then(res => res.json())
@@ -135,41 +185,35 @@ function loadTips() {
     .catch(e => console.error("Hiba a fetch során:", e));
 }
 
-document.getElementById("login-btn").addEventListener("click", () => {
-  const name = document.getElementById("login-name").value.trim();
-  const pass = document.getElementById("login-pass").value.trim();
+// VISSZASZÁMLÁLÓ 168 ÓRÁRA
+function startCountdown() {
+  const endTime = new Date();
+  endTime.setHours(endTime.getHours() + 168); // 168 óra = 7 nap
 
-  const userByName = users.find(u => u.name.toLowerCase() === name.toLowerCase());
+  const countdownEl = document.getElementById("countdown");
 
-  if (!userByName) {
-    errorP.textContent = "Ilyen felhasználónév nem létezik!";
-    errorP.classList.remove("success");
-    errorP.classList.add("error");
-    return;
+  function updateCountdown() {
+    const now = new Date();
+    let diff = endTime - now;
+
+    if(diff <= 0){
+      countdownEl.textContent = "Lejárt a próbaidőszak!";
+      clearInterval(timer);
+      return;
+    }
+
+    const hours = Math.floor(diff / (1000 * 60 * 60));
+    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+    countdownEl.textContent = `${hours}:${minutes.toString().padStart(2,'0')}:${seconds.toString().padStart(2,'0')}`;
   }
 
-  if (userByName.password !== pass) {
-    errorP.textContent = "Hibás jelszó! Jelszóemlékeztetőt kérj DC-n!";
-    errorP.classList.remove("success");
-    errorP.classList.add("error");
-    return;
-  }
+  updateCountdown();
+  const timer = setInterval(updateCountdown, 1000);
+}
 
-  errorP.textContent = "Sikeres bejelentkezés! Betöltés...";
-  errorP.classList.remove("error");
-  errorP.classList.add("success");
-
-  setTimeout(() => {
-    loginContainer.style.display = "none";
-    loadTips();
-  }, 800);
-});
-
-document.getElementById("login-pass").addEventListener("keydown", (e) => {
-  if(e.key === "Enter"){
-    document.getElementById("login-btn").click();
-  }
-});
+startCountdown();
 </script>
 
 </body>

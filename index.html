@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Krikett Tippek / Predictions</title>
 
-  <!-- CSS betöltése -->
   <link rel="stylesheet" href="style.css">
   <style>
     /* Login hiba/siker üzenet */
@@ -20,18 +19,14 @@
       color: green;
     }
 
-    /* Próbaidőszak info doboz */
+    /* Próbaidőszak info szöveg - világos sárga szín */
     #trial-info {
       margin-top: 10px;
       font-weight: bold;
-      background-color: #003366; /* sötétkék háttér */
-      color: #ffff99; /* világossárga szöveg */
-      padding: 10px;
-      border-radius: 6px;
-      text-align: center;
+      color: #FFFF66; /* világos sárga */
     }
     #trial-info a {
-      color: #ffcc00;
+      color: #FF6600; /* narancssárga link */
       text-decoration: underline;
       font-weight: bold;
     }
@@ -73,7 +68,7 @@ const tipsContainer = document.getElementById("tips-container");
 const errorP = document.getElementById("login-error");
 
 function loadTips() {
-  fetch("tips.json?v=" + new Date().getTime()) // cache elkerülése
+  fetch("tips.json?v=" + new Date().getTime())
     .then(res => res.json())
     .then(tips => {
       tips.sort((a,b) => new Date(a.start_time) - new Date(b.start_time));
@@ -140,7 +135,6 @@ function loadTips() {
     .catch(e => console.error("Hiba a fetch során:", e));
 }
 
-// LOGIN LOGIKA
 document.getElementById("login-btn").addEventListener("click", () => {
   const name = document.getElementById("login-name").value.trim();
   const pass = document.getElementById("login-pass").value.trim();
@@ -161,7 +155,6 @@ document.getElementById("login-btn").addEventListener("click", () => {
     return;
   }
 
-  // Sikeres login
   errorP.textContent = "Sikeres bejelentkezés! Betöltés...";
   errorP.classList.remove("error");
   errorP.classList.add("success");
@@ -169,10 +162,9 @@ document.getElementById("login-btn").addEventListener("click", () => {
   setTimeout(() => {
     loginContainer.style.display = "none";
     loadTips();
-  }, 800); // kis késleltetés a vizuális hatás miatt
+  }, 800);
 });
 
-// ENTER-rel login
 document.getElementById("login-pass").addEventListener("keydown", (e) => {
   if(e.key === "Enter"){
     document.getElementById("login-btn").click();

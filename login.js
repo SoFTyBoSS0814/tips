@@ -25,6 +25,10 @@ function calculateExpiry(duration) {
     now.setMonth(now.getMonth() + 1);
   }
 
+  if (duration === "2month") {
+    now.setMonth(now.getMonth() +2);
+  }
+
   return now;
 }
 

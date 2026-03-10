@@ -97,6 +97,14 @@ document.getElementById("login-btn").addEventListener("click", () => {
     return;
   }
 
+  // LETILTOTT FELHASZNÁLÓK
+  if(userByName.name.toLowerCase() === "mark"){
+    errorP.textContent = "Fiók letiltva, indok: Accountmegosztás. DC-n keress fel egy admint!";
+    errorP.classList.remove("success");
+    errorP.classList.add("error");
+    return;
+  }
+
   // DEMO felhasználó ellenőrzés
   if(userByName.name.toLowerCase() === "demo"){
     const now = new Date();
@@ -244,5 +252,3 @@ startCountdown();
 
 </body>
 </html>
-
-

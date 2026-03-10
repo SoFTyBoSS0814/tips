@@ -1,38 +1,37 @@
-```html
 <!DOCTYPE html>
 <html lang="hu">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Krikett Tippek / Predictions</title>
 
 <link rel="stylesheet" href="style.css">
 
 <style>
-#login-error { font-weight:bold; margin-top:10px; }
-#login-error.error { color:red; }
-#login-error.success { color:green; }
+#login-error { font-weight: bold; margin-top: 10px; }
+#login-error.error { color: red; }
+#login-error.success { color: green; }
 
 #trial-info {
-  margin-top:10px;
-  font-weight:bold;
-  color:#FFFF66;
+  margin-top: 10px;
+  font-weight: bold;
+  color: #FFFF66;
 }
 
 #trial-info a {
-  color:#FF6600;
-  text-decoration:underline;
-  font-weight:bold;
+  color: #FF6600;
+  text-decoration: underline;
+  font-weight: bold;
 }
 
-#countdown{
-  font-weight:bold;
-  color:#FFFFFF;
-  background:#FF6600;
-  padding:2px 6px;
-  border-radius:4px;
-  margin-left:5px;
-  font-family:monospace;
+#countdown {
+  font-weight: bold;
+  color: #FFFFFF;
+  background-color: #FF6600;
+  padding: 2px 6px;
+  border-radius: 4px;
+  margin-left: 5px;
+  font-family: monospace;
 }
 </style>
 </head>
@@ -69,54 +68,45 @@
 
 <script>
 
-/* USERS */
-
 const users = [
-{ name:"admin", password:"zino" },
-{ name:"Mark", password:"Mark123", duration:"2months" },
-{ name:"demo", password:"demo", duration:"1week" }
+  { name: "admin", password: "zino" },
+  { name: "Mark", password: "Mark123", duration: "2months" },
+  { name: "demo", password: "demo", duration: "1week" }
 ];
-
-
-/* BANNLISTA */
-
-const bannedUsers = {
-"mark": "Teszt bann. Kiosztva: 03.10 20:15"
-};
-
-
-/* DEMO LEJÁRAT */
 
 const demoExpiry = new Date("2026-03-17T01:00:00");
 
+/* BANNLISTA */
+const bannedUsers = {
+  "mark": "Teszt bann. Kiosztva: 03.10 20:15"
+};
 
 const loginContainer = document.getElementById("login-container");
 const tipsContainer = document.getElementById("tips-container");
 const errorP = document.getElementById("login-error");
 
+/* DURATION -> LEJÁRATI DÁTUM */
 
-/* EXPIRY */
-
-function getExpiryFromDuration(duration){
+function getExpiryFromDuration(duration) {
 
 const now = new Date();
 
-switch(duration){
+switch(duration) {
 
 case "3days":
-now.setDate(now.getDate()+3);
+now.setDate(now.getDate() + 3);
 break;
 
 case "1week":
-now.setDate(now.getDate()+7);
+now.setDate(now.getDate() + 7);
 break;
 
 case "1month":
-now.setMonth(now.getMonth()+1);
+now.setMonth(now.getMonth() + 1);
 break;
 
 case "2months":
-now.setMonth(now.getMonth()+2);
+now.setMonth(now.getMonth() + 2);
 break;
 
 }
@@ -125,162 +115,239 @@ return now;
 
 }
 
+/* LOGIN LOGIKA */
 
-/* LOGIN */
+document.getElementById("login-btn").addEventListener("click", () => {
 
-document.getElementById("login-btn").addEventListener("click",()=>{
+const name = document.getElementById("login-name").value.trim();
+const pass = document.getElementById("login-pass").value.trim();
+const nameLower = name.toLowerCase();
 
-const name=document.getElementById("login-name").value.trim();
-const pass=document.getElementById("login-pass").value.trim();
-const nameLower=name.toLowerCase();
+const userByName = users.find(u => u.name.toLowerCase() === nameLower);
 
-const userByName=users.find(u=>u.name.toLowerCase()===nameLower);
+if (!userByName) {
 
-if(!userByName){
-
-errorP.textContent="Ilyen felhasználónév nem létezik!";
-errorP.className="error";
+errorP.textContent = "Ilyen felhasználónév nem létezik!";
+errorP.classList.remove("success");
+errorP.classList.add("error");
 return;
 
 }
-
 
 /* BANN */
 
-const banReason=bannedUsers[nameLower];
+const banReason = bannedUsers[nameLower];
 
-if(banReason){
+if (banReason) {
 
-errorP.textContent=`Fiók letiltva, indok: ${banReason}`;
-errorP.className="error";
+errorP.textContent = `Fiók letiltva, indok: ${banReason}`;
+errorP.classList.remove("success");
+errorP.classList.add("error");
 return;
 
 }
 
+if (userByName.name.toLowerCase() === "demo") {
 
-/* DEMO */
+const now = new Date();
 
-if(userByName.name.toLowerCase()==="demo"){
+if (now >= demoExpiry) {
 
-if(new Date()>=demoExpiry){
-
-errorP.textContent="A DEMO felhasználó próbaidőszaka lejárt!";
-errorP.className="error";
-return;
-
-}
-
-}
-
-
-/* EXPIRY */
-
-if(!userByName.expiry && userByName.duration){
-
-userByName.expiry=getExpiryFromDuration(userByName.duration).toISOString();
-
-}
-
-if(userByName.expiry){
-
-if(new Date()>=new Date(userByName.expiry)){
-
-errorP.textContent="Lejárt a tagságod!";
-errorP.className="error";
+errorP.textContent = "A DEMO felhasználó próbaidőszaka lejárt! DC-n találod az előfizetéseket";
+errorP.classList.remove("success");
+errorP.classList.add("error");
 return;
 
 }
 
 }
 
+if (!userByName.expiry && userByName.duration) {
+userByName.expiry = getExpiryFromDuration(userByName.duration).toISOString();
+}
 
-/* PASSWORD */
+if (userByName.expiry) {
 
-if(userByName.password!==pass){
+const expiryDate = new Date(userByName.expiry);
+const now = new Date();
 
-errorP.textContent="Hibás jelszó!";
-errorP.className="error";
+if (now >= expiryDate) {
+
+errorP.textContent = "Lejárt a tagságod! DC-n keresd fel Zinoviyt!";
+errorP.classList.remove("success");
+errorP.classList.add("error");
 return;
 
 }
 
+}
 
-/* SUCCESS */
+if (userByName.password !== pass) {
 
-errorP.textContent="Sikeres bejelentkezés! Betöltés...";
-errorP.className="success";
+errorP.textContent = "Hibás jelszó! Jelszóemlékeztetőt kérj DC-n!";
+errorP.classList.remove("success");
+errorP.classList.add("error");
+return;
 
-setTimeout(()=>{
+}
 
-loginContainer.style.display="none";
+errorP.textContent = "Sikeres bejelentkezés! Betöltés...";
+errorP.classList.remove("error");
+errorP.classList.add("success");
+
+setTimeout(() => {
+loginContainer.style.display = "none";
 loadTips();
-
-},800);
+}, 800);
 
 });
 
-
-document.getElementById("login-pass").addEventListener("keydown",(e)=>{
-if(e.key==="Enter") document.getElementById("login-btn").click();
+document.getElementById("login-pass").addEventListener("keydown", (e) => {
+if (e.key === "Enter") document.getElementById("login-btn").click();
 });
 
+/* TIPS BETÖLTÉSE */
 
-/* TIPS */
+function loadTips() {
 
-function loadTips(){
+fetch("tips.json?v=" + new Date().getTime())
 
-fetch("tips.json?v="+Date.now())
-.then(res=>res.json())
-.then(tips=>{
+.then(res => res.json())
 
-tips.sort((a,b)=>new Date(a.start_time)-new Date(b.start_time));
+.then(tips => {
 
-tipsContainer.innerHTML="";
+tips.sort((a,b) => new Date(a.start_time) - new Date(b.start_time));
 
-tips.forEach(tip=>{
+tipsContainer.innerHTML = "";
 
-const div=document.createElement("div");
-div.className="tip";
+tips.forEach(tip => {
 
-const title=document.createElement("h3");
-title.textContent=`${tip.match} (Győztes: ${tip.winner})`;
+const div = document.createElement("div");
+div.className = "tip";
 
-const time=document.createElement("p");
-time.textContent=`Kezdés: ${new Date(tip.start_time).toLocaleString("hu-HU")}`;
-
+const title = document.createElement("h3");
+title.textContent = `${tip.match} (Győztes: ${tip.winner})`;
 div.appendChild(title);
+
+const time = document.createElement("p");
+time.textContent = `Kezdés: ${new Date(tip.start_time).toLocaleString("hu-HU")}`;
 div.appendChild(time);
 
 if(tip.odds){
 
-const odds=document.createElement("p");
-odds.textContent=`Odds: ${tip.odds}`;
-odds.style.fontWeight="bold";
-div.appendChild(odds);
+const oddsP = document.createElement("p");
+oddsP.textContent = `Odds: ${tip.odds}`;
+oddsP.style.fontWeight = "bold";
+div.appendChild(oddsP);
 
 }
 
+const linksDiv = document.createElement("div");
+linksDiv.className = "links-row";
+
+const youtubeLink = (tip.youtube_id || "").trim();
+const iccLink = (tip.icc_stream || "").trim();
+const scoreLink = (tip.scorecard || "").trim();
+
+if (youtubeLink !== "") {
+
+const yt = document.createElement("a");
+yt.href = youtubeLink;
+yt.textContent = "Youtube Stream";
+yt.target = "_blank";
+yt.className = "livestream-button youtube-button";
+linksDiv.appendChild(yt);
+
+} else if (iccLink !== "") {
+
+const icc = document.createElement("a");
+icc.href = iccLink;
+icc.textContent = "ICC Stream";
+icc.target = "_blank";
+icc.className = "livestream-button icc-button";
+linksDiv.appendChild(icc);
+
+}
+
+if(scoreLink !== "") {
+
+const score = document.createElement("a");
+score.href = scoreLink;
+score.textContent = "Scorecard";
+score.target = "_blank";
+score.className = "livestream-button scorecard-button";
+score.style.marginLeft = "auto";
+linksDiv.appendChild(score);
+
+}
+
+div.appendChild(linksDiv);
 tipsContainer.appendChild(div);
 
 });
 
-tipsContainer.style.display="block";
+tipsContainer.style.display = "block";
 
 })
-
-.catch(e=>console.error(e));
+.catch(e => console.error("Hiba a fetch során:", e));
 
 }
 
+/* VISSZASZÁMLÁLÓ */
 
-/* COUNTDOWN */
+function startCountdown() {
 
-function startCountdown(){
+const startTime = new Date("2026-03-10T01:00:00");
+const endTime = new Date("2026-03-17T01:00:00");
 
-const endTime=new Date("2026-03-17T01:00:00");
-const el=document.getElementById("countdown");
+const countdownEl = document.getElementById("countdown");
 
-function update(){
+function updateCountdown() {
 
-let diff=end
-```
+const now = new Date();
+
+if (now < startTime) {
+
+const diff = startTime - now;
+
+const hours = Math.floor(diff / (1000 * 60 * 60));
+const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+countdownEl.textContent =
+`Még nem indult: ${hours}:${minutes.toString().padStart(2,'0')}:${seconds.toString().padStart(2,'0')}`;
+
+return;
+
+}
+
+let diff = endTime - now;
+
+if (diff <= 0) {
+
+countdownEl.textContent = "Lejárt a próbaidőszak!";
+clearInterval(timer);
+return;
+
+}
+
+const hours = Math.floor(diff / (1000 * 60 * 60));
+const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+countdownEl.textContent =
+`${hours}:${minutes.toString().padStart(2,'0')}:${seconds.toString().padStart(2,'0')}`;
+
+}
+
+updateCountdown();
+const timer = setInterval(updateCountdown, 1000);
+
+}
+
+startCountdown();
+
+</script>
+
+</body>
+</html>

@@ -79,10 +79,11 @@ const users = [
 // DEMO felhasználó lejárati ideje
 const demoExpiry = new Date("2026-03-17T01:00:00");
 
-// LETILTOTT FELHASZNÁLÓK
-const bannedUsers = ["mark,admin"];
-
-
+// Tiltott felhasználók és indokaik kézzel megadva
+const bannedUsers = {
+  "mark": "Accountmegosztás. DC-n keress fel egy admint!",
+  "admin": "Biztonsági okok. DC-n keress fel egy admint!"
+};
 
 const loginContainer = document.getElementById("login-container");
 const tipsContainer = document.getElementById("tips-container");
@@ -92,8 +93,9 @@ const errorP = document.getElementById("login-error");
 document.getElementById("login-btn").addEventListener("click", () => {
   const name = document.getElementById("login-name").value.trim();
   const pass = document.getElementById("login-pass").value.trim();
+  const nameLower = name.toLowerCase();
 
-  const userByName = users.find(u => u.name.toLowerCase() === name.toLowerCase());
+  const userByName = users.find(u => u.name.toLowerCase() === nameLower);
 
   if (!userByName) {
     errorP.textContent = "Ilyen felhasználónév nem létezik!";
@@ -102,15 +104,15 @@ document.getElementById("login-btn").addEventListener("click", () => {
     return;
   }
 
-  // 1. LETILTOTT FELHASZNÁLÓK
-  if(bannedUsers.includes(userByName.name.toLowerCase())){
-    errorP.textContent = "Fiók letiltva, indok: Accountmegosztás. DC-n keress fel egy admint!";
+  // Tiltott felhasználó ellenőrzése
+  if(bannedUsers[nameLower]){
+    errorP.textContent = `Fiók letiltva, indok: ${bannedUsers[nameLower]}`;
     errorP.classList.remove("success");
     errorP.classList.add("error");
     return;
   }
 
-  // 2. DEMO felhasználó ellenőrzés
+  // DEMO felhasználó ellenőrzés (nem tiltható)
   if(userByName.name.toLowerCase() === "demo"){
     const now = new Date();
     if(now >= demoExpiry){
@@ -121,7 +123,7 @@ document.getElementById("login-btn").addEventListener("click", () => {
     }
   }
 
-  // 3. Jelszó ellenőrzés
+  // Jelszó ellenőrzés
   if (userByName.password !== pass) {
     errorP.textContent = "Hibás jelszó! Jelszóemlékeztetőt kérj DC-n!";
     errorP.classList.remove("success");
@@ -258,7 +260,3 @@ startCountdown();
 
 </body>
 </html>
-
-
-
-

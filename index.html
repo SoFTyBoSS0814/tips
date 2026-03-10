@@ -7,35 +7,21 @@
 
   <link rel="stylesheet" href="style.css">
   <style>
-    /* Login hiba/siker üzenet */
-    #login-error {
-      font-weight: bold;
-      margin-top: 10px;
-    }
-    #login-error.error {
-      color: red;
-    }
-    #login-error.success {
-      color: green;
-    }
+    #login-error { font-weight: bold; margin-top: 10px; }
+    #login-error.error { color: red; }
+    #login-error.success { color: green; }
 
-    /* Próbaidőszak info szöveg */
     #trial-info {
       margin-top: 10px;
       font-weight: bold;
-      color: #FFFF66; /* világos sárga */
+      color: #FFFF66;
     }
-    #trial-info a {
-      color: #FF6600; /* narancssárga link */
-      text-decoration: underline;
-      font-weight: bold;
-    }
+    #trial-info a { color: #FF6600; text-decoration: underline; font-weight: bold; }
 
-    /* Visszaszámláló stílusa */
     #countdown {
       font-weight: bold;
-      color: #FFFFFF; /* fehér szöveg */
-      background-color: #FF6600; /* narancssárga doboz */
+      color: #FFFFFF;
+      background-color: #FF6600;
       padding: 2px 6px;
       border-radius: 4px;
       margin-left: 5px;
@@ -54,9 +40,8 @@
   <button id="login-btn">Bejelentkezés</button>
   <p id="login-error"></p>
 
-  <!-- Próbaidőszak info -->
   <p id="trial-info">
-    1 hetes próbaidőszak: 03.10 - 03.17 között! Discordon találod a logint! 
+    Próbaidőszak: Discordon találod a logint! 
     <a href="https://discord.gg/VunhZFjEUr" target="_blank">https://discord.gg/VunhZFjEUr</a><br>
     <span id="countdown">168:00:00</span>
   </p>
@@ -70,37 +55,40 @@
 <div id="tips-container" style="display:none;"></div>
 
 <script>
-/* -------------------------
-   FELHASZNÁLÓK LISTÁJA
-   ------------------------- */
 const users = [
-  { name: "admin", password: "zino", duration: "1month" },
+  { name: "admin", password: "zino", duration: "2months" },
   { name: "Mark", password: "Mark123", duration: "1week" },
   { name: "demo", password: "demo", duration: "1week" },
-  { name: "user1", password: "pass", duration: "1week" }
+  { name: "user1", password: "pass", duration: "3days" }
 ];
 
-// DEMO felhasználó alap lejárati ideje (manuális)
 const demoExpiry = new Date("2026-03-17T01:00:00");
 
-// Tiltott felhasználók és indokaik kézzel
-const bannedUsers = {
-  "ban": "BANN SZÖVEGE"
-};
+const bannedUsers = { "ban": "BANN SZÖVEGE" };
 
 const loginContainer = document.getElementById("login-container");
 const tipsContainer = document.getElementById("tips-container");
 const errorP = document.getElementById("login-error");
 
 /* -------------------------
-   SEGÉDFÜGGVÉNY: DURATION -> LEJÁRATI DÁTUM
+   DURATION -> LEJÁRATI DÁTUM
+   Időrendi sorrendben kezelve
    ------------------------- */
 function getExpiryFromDuration(duration) {
   const now = new Date();
-  if(duration === "1week") {
-    now.setDate(now.getDate() + 7);
-  } else if(duration === "1month") {
-    now.setMonth(now.getMonth() + 1);
+  switch(duration) {
+    case "3days":
+      now.setDate(now.getDate() + 3);
+      break;
+    case "1week":
+      now.setDate(now.getDate() + 7);
+      break;
+    case "1month":
+      now.setMonth(now.getMonth() + 1);
+      break;
+    case "2months":
+      now.setMonth(now.getMonth() + 2);
+      break;
   }
   return now;
 }
@@ -114,62 +102,49 @@ document.getElementById("login-btn").addEventListener("click", () => {
   const nameLower = name.toLowerCase();
 
   const userByName = users.find(u => u.name.toLowerCase() === nameLower);
-
   if (!userByName) {
     errorP.textContent = "Ilyen felhasználónév nem létezik!";
-    errorP.classList.remove("success");
-    errorP.classList.add("error");
+    errorP.classList.remove("success"); errorP.classList.add("error");
     return;
   }
 
-  // Tiltott felhasználó ellenőrzése
   if (bannedUsers[nameLower]) {
     errorP.textContent = `Fiók letiltva, indok: ${bannedUsers[nameLower]}`;
-    errorP.classList.remove("success");
-    errorP.classList.add("error");
+    errorP.classList.remove("success"); errorP.classList.add("error");
     return;
   }
 
-  // DEMO felhasználó ellenőrzés (nem tiltható)
   if (userByName.name.toLowerCase() === "demo") {
     const now = new Date();
     if (now >= demoExpiry) {
       errorP.textContent = "A DEMO felhasználó próbaidőszaka lejárt! DC-n találod az előfizetéseket";
-      errorP.classList.remove("success");
-      errorP.classList.add("error");
+      errorP.classList.remove("success"); errorP.classList.add("error");
       return;
     }
   }
 
-  // Duration alapján kiszámoljuk az expiry-t (ha nincs manuálisan megadva)
   if (!userByName.expiry && userByName.duration) {
     userByName.expiry = getExpiryFromDuration(userByName.duration).toISOString();
   }
 
-  // Tagság lejárat ellenőrzése
   if (userByName.expiry) {
     const expiryDate = new Date(userByName.expiry);
     const now = new Date();
     if (now >= expiryDate) {
       errorP.textContent = "Lejárt a tagságod! DC-n keresd fel Zinoviyt!";
-      errorP.classList.remove("success");
-      errorP.classList.add("error");
+      errorP.classList.remove("success"); errorP.classList.add("error");
       return;
     }
   }
 
-  // Jelszó ellenőrzés
   if (userByName.password !== pass) {
     errorP.textContent = "Hibás jelszó! Jelszóemlékeztetőt kérj DC-n!";
-    errorP.classList.remove("success");
-    errorP.classList.add("error");
+    errorP.classList.remove("success"); errorP.classList.add("error");
     return;
   }
 
-  // Sikeres login
   errorP.textContent = "Sikeres bejelentkezés! Betöltés...";
-  errorP.classList.remove("error");
-  errorP.classList.add("success");
+  errorP.classList.remove("error"); errorP.classList.add("success");
 
   setTimeout(() => {
     loginContainer.style.display = "none";
@@ -177,13 +152,8 @@ document.getElementById("login-btn").addEventListener("click", () => {
   }, 800);
 });
 
-/* -------------------------
-   ENTER-rel login
-   ------------------------- */
 document.getElementById("login-pass").addEventListener("keydown", (e) => {
-  if (e.key === "Enter") {
-    document.getElementById("login-btn").click();
-  }
+  if (e.key === "Enter") document.getElementById("login-btn").click();
 });
 
 /* -------------------------

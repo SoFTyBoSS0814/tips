@@ -2,35 +2,37 @@
 <!DOCTYPE html>
 <html lang="hu">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Krikett Tippek</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Krikett Tippek / Predictions</title>
 
 <link rel="stylesheet" href="style.css">
 
 <style>
-#login-error { font-weight:bold; margin-top:10px; }
-#login-error.error { color:red; }
-#login-error.success { color:green; }
+#login-error { font-weight: bold; margin-top: 10px; }
+#login-error.error { color: red; }
+#login-error.success { color: green; }
 
 #trial-info {
-  margin-top:10px;
-  font-weight:bold;
-  color:#FFFF66;
+  margin-top: 10px;
+  font-weight: bold;
+  color: #FFFF66;
 }
 
 #trial-info a {
-  color:#FF6600;
-  text-decoration:underline;
+  color: #FF6600;
+  text-decoration: underline;
+  font-weight: bold;
 }
 
-#countdown{
-  font-weight:bold;
-  color:#fff;
-  background:#FF6600;
-  padding:3px 6px;
-  border-radius:4px;
-  font-family:monospace;
+#countdown {
+  font-weight: bold;
+  color: #FFFFFF;
+  background-color: #FF6600;
+  padding: 2px 6px;
+  border-radius: 4px;
+  margin-left: 5px;
+  font-family: monospace;
 }
 </style>
 </head>
@@ -51,11 +53,15 @@
 <p id="login-error"></p>
 
 <p id="trial-info">
-1 hetes próbaidőszak: 03.10 - 03.17 között!  
-Discordon találod a logint!  
-<a href="https://discord.gg/VunhZFjEUr" target="_blank">Discord</a><br>
+1 hetes próbaidőszak: 03.10 - 03.17 között! Discordon találod a logint!
+<a href="https://discord.gg/VunhZFjEUr" target="_blank">https://discord.gg/VunhZFjEUr</a><br>
 <span id="countdown">168:00:00</span>
 </p>
+
+<div id="footer-links-login">
+<a href="aszf.html" target="_blank">ÁSZF</a>
+<a href="gdpr.html" target="_blank">GDPR</a>
+</div>
 
 </div>
 
@@ -64,41 +70,32 @@ Discordon találod a logint!
 <script>
 
 /* -------------------------
-   FELHASZNÁLÓK
+   USERS
 ------------------------- */
 
 const users = [
-
-{ name:"admin", password:"zino" },
-
-{ name:"Mark", password:"Mark123", duration:"2months" },
-
-{ name:"demo", password:"demo", duration:"1week" }
-
+{ name: "admin", password: "zino" },
+{ name: "Mark", password: "Mark123", duration: "2months" },
+{ name: "demo", password: "demo", duration: "1week" }
 ];
 
 
 /* -------------------------
-   BANNLISTA (kisbetű!)
+   BANNLISTA INDOKKAL
+   (username kisbetűvel)
 ------------------------- */
 
 const bannedUsers = {
-
-"mark": "Teszt bann. Kiosztva: 03.10 20:15"
-
+  "mark": "Teszt bann. Kiosztva: 03.10 20:15"
 };
 
 
 /* -------------------------
-   DEMO LEJÁRAT
+   DEMO EXPIRY
 ------------------------- */
 
 const demoExpiry = new Date("2026-03-17T01:00:00");
 
-
-/* -------------------------
-   ELEMEK
-------------------------- */
 
 const loginContainer = document.getElementById("login-container");
 const tipsContainer = document.getElementById("tips-container");
@@ -106,20 +103,214 @@ const errorP = document.getElementById("login-error");
 
 
 /* -------------------------
-   TAGSÁG IDŐ
+   DURATION -> LEJÁRAT
 ------------------------- */
 
-function getExpiryFromDuration(duration){
+function getExpiryFromDuration(duration) {
 
 const now = new Date();
 
-switch(duration){
+switch(duration) {
 
 case "3days":
-now.setDate(now.getDate()+3);
+now.setDate(now.getDate() + 3);
 break;
 
 case "1week":
-now.setDate(now.getDate()+7);
-bre
+now.setDate(now.getDate() + 7);
+break;
+
+case "1month":
+now.setMonth(now.getMonth() + 1);
+break;
+
+case "2months":
+now.setMonth(now.getMonth() + 2);
+break;
+
+}
+
+return now;
+
+}
+
+
+/* -------------------------
+   LOGIN
+------------------------- */
+
+document.getElementById("login-btn").addEventListener("click", () => {
+
+const name = document.getElementById("login-name").value.trim();
+const pass = document.getElementById("login-pass").value.trim();
+const nameLower = name.toLowerCase();
+
+const userByName = users.find(u => u.name.toLowerCase() === nameLower);
+
+if (!userByName) {
+
+errorP.textContent = "Ilyen felhasználónév nem létezik!";
+errorP.classList.remove("success");
+errorP.classList.add("error");
+return;
+
+}
+
+
+/* BANN ELLENŐRZÉS */
+
+const banReason = bannedUsers[nameLower];
+
+if (banReason) {
+
+errorP.textContent = `Fiók letiltva, indok: ${banReason}`;
+errorP.classList.remove("success");
+errorP.classList.add("error");
+return;
+
+}
+
+
+/* DEMO LEJÁRAT */
+
+if (userByName.name.toLowerCase() === "demo") {
+
+const now = new Date();
+
+if (now >= demoExpiry) {
+
+errorP.textContent = "A DEMO felhasználó próbaidőszaka lejárt! DC-n találod az előfizetéseket";
+errorP.classList.remove("success");
+errorP.classList.add("error");
+return;
+
+}
+
+}
+
+
+/* TAGSÁG LEJÁRAT */
+
+if (!userByName.expiry && userByName.duration) {
+userByName.expiry = getExpiryFromDuration(userByName.duration).toISOString();
+}
+
+if (userByName.expiry) {
+
+const expiryDate = new Date(userByName.expiry);
+const now = new Date();
+
+if (now >= expiryDate) {
+
+errorP.textContent = "Lejárt a tagságod! DC-n keresd fel Zinoviyt!";
+errorP.classList.remove("success");
+errorP.classList.add("error");
+return;
+
+}
+
+}
+
+
+/* JELSZÓ */
+
+if (userByName.password !== pass) {
+
+errorP.textContent = "Hibás jelszó! Jelszóemlékeztetőt kérj DC-n!";
+errorP.classList.remove("success");
+errorP.classList.add("error");
+return;
+
+}
+
+
+/* SIKER */
+
+errorP.textContent = "Sikeres bejelentkezés! Betöltés...";
+errorP.classList.remove("error");
+errorP.classList.add("success");
+
+setTimeout(() => {
+loginContainer.style.display = "none";
+loadTips();
+}, 800);
+
+});
+
+
+document.getElementById("login-pass").addEventListener("keydown", (e) => {
+if (e.key === "Enter") document.getElementById("login-btn").click();
+});
+
+
+/* -------------------------
+   TIPS BETÖLTÉS
+------------------------- */
+
+function loadTips() {
+
+fetch("tips.json?v=" + new Date().getTime())
+
+.then(res => res.json())
+
+.then(tips => {
+
+tips.sort((a,b) => new Date(a.start_time) - new Date(b.start_time));
+
+tipsContainer.innerHTML = "";
+
+tips.forEach(tip => {
+
+const div = document.createElement("div");
+div.className = "tip";
+
+const title = document.createElement("h3");
+title.textContent = `${tip.match} (Győztes: ${tip.winner})`;
+div.appendChild(title);
+
+const time = document.createElement("p");
+time.textContent = `Kezdés: ${new Date(tip.start_time).toLocaleString("hu-HU")}`;
+div.appendChild(time);
+
+if(tip.odds){
+
+const oddsP = document.createElement("p");
+oddsP.textContent = `Odds: ${tip.odds}`;
+oddsP.style.fontWeight = "bold";
+div.appendChild(oddsP);
+
+}
+
+tipsContainer.appendChild(div);
+
+});
+
+tipsContainer.style.display = "block";
+
+})
+
+.catch(e => console.error("Hiba a fetch során:", e));
+
+}
+
+
+/* -------------------------
+   COUNTDOWN
+------------------------- */
+
+function startCountdown() {
+
+const startTime = new Date("2026-03-10T01:00:00");
+const endTime = new Date("2026-03-17T01:00:00");
+const countdownEl = document.getElementById("countdown");
+
+function updateCountdown() {
+
+const now = new Date();
+
+if (now < startTime) {
+
+const diff = startTime - now;
+
+const hours = Math.floor(diff
 ```

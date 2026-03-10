@@ -3,7 +3,7 @@
 // Felhasználók listája
 const users = [
   { name: "admin", password: "zino" },
-  { name: "Mark", password: "Mark123" },
+  { name: "Mark", password: "Mark123", duration: "2month" },
   { name: "demo", password: "demo", duration: "1week" }
 ];
 

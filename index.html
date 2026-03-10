@@ -69,23 +69,25 @@
 <script>
 
 const users = [
-  { name: "admin", password: "zino" },
-  { name: "Mark", password: "Mark123", duration: "2months" },
-  { name: "demo", password: "demo", duration: "1week" }
+{ name: "admin", password: "zino" },
+{ name: "Mark", password: "Mark123", duration: "2months" },
+{ name: "demo", password: "demo", duration: "1week" }
 ];
 
 const demoExpiry = new Date("2026-03-17T01:00:00");
 
-/* BANNLISTA */
 const bannedUsers = {
-  "mark": "Teszt bann. Kiosztva: 03.10 20:15"
-};
+"Mark": "Teszt bann. Kiosztva: 03.10 20:15"
+}
 
 const loginContainer = document.getElementById("login-container");
 const tipsContainer = document.getElementById("tips-container");
 const errorP = document.getElementById("login-error");
 
-/* DURATION -> LEJÁRATI DÁTUM */
+/* -------------------------
+DURATION -> LEJÁRATI DÁTUM
+Időrendi sorrendben kezelve
+------------------------- */
 
 function getExpiryFromDuration(duration) {
 
@@ -115,12 +117,15 @@ return now;
 
 }
 
-/* LOGIN LOGIKA */
+/* -------------------------
+LOGIN LOGIKA
+------------------------- */
 
 document.getElementById("login-btn").addEventListener("click", () => {
 
 const name = document.getElementById("login-name").value.trim();
 const pass = document.getElementById("login-pass").value.trim();
+
 const nameLower = name.toLowerCase();
 
 const userByName = users.find(u => u.name.toLowerCase() === nameLower);
@@ -134,13 +139,9 @@ return;
 
 }
 
-/* BANN */
+if (bannedUsers[nameLower]) {
 
-const banReason = bannedUsers[nameLower];
-
-if (banReason) {
-
-errorP.textContent = `Fiók letiltva, indok: ${banReason}`;
+errorP.textContent = Fiók letiltva, indok: ${bannedUsers[nameLower]};
 errorP.classList.remove("success");
 errorP.classList.add("error");
 return;
@@ -163,7 +164,9 @@ return;
 }
 
 if (!userByName.expiry && userByName.duration) {
+
 userByName.expiry = getExpiryFromDuration(userByName.duration).toISOString();
+
 }
 
 if (userByName.expiry) {
@@ -196,17 +199,23 @@ errorP.classList.remove("error");
 errorP.classList.add("success");
 
 setTimeout(() => {
+
 loginContainer.style.display = "none";
 loadTips();
+
 }, 800);
 
 });
 
 document.getElementById("login-pass").addEventListener("keydown", (e) => {
+
 if (e.key === "Enter") document.getElementById("login-btn").click();
+
 });
 
-/* TIPS BETÖLTÉSE */
+/* -------------------------
+TIPS BETÖLTÉSE
+------------------------- */
 
 function loadTips() {
 
@@ -226,17 +235,17 @@ const div = document.createElement("div");
 div.className = "tip";
 
 const title = document.createElement("h3");
-title.textContent = `${tip.match} (Győztes: ${tip.winner})`;
+title.textContent = ${tip.match} (Győztes: ${tip.winner});
 div.appendChild(title);
 
 const time = document.createElement("p");
-time.textContent = `Kezdés: ${new Date(tip.start_time).toLocaleString("hu-HU")}`;
+time.textContent = Kezdés: ${new Date(tip.start_time).toLocaleString("hu-HU")};
 div.appendChild(time);
 
 if(tip.odds){
 
 const oddsP = document.createElement("p");
-oddsP.textContent = `Odds: ${tip.odds}`;
+oddsP.textContent = Odds: ${tip.odds};
 oddsP.style.fontWeight = "bold";
 div.appendChild(oddsP);
 
@@ -289,11 +298,14 @@ tipsContainer.appendChild(div);
 tipsContainer.style.display = "block";
 
 })
+
 .catch(e => console.error("Hiba a fetch során:", e));
 
 }
 
-/* VISSZASZÁMLÁLÓ */
+/* -------------------------
+VISSZASZÁMLÁLÓ
+------------------------- */
 
 function startCountdown() {
 
@@ -314,9 +326,7 @@ const hours = Math.floor(diff / (1000 * 60 * 60));
 const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
 const seconds = Math.floor((diff % (1000 * 60)) / 1000);
 
-countdownEl.textContent =
-`Még nem indult: ${hours}:${minutes.toString().padStart(2,'0')}:${seconds.toString().padStart(2,'0')}`;
-
+countdownEl.textContent = Még nem indult: ${hours}:${minutes.toString().padStart(2,'0')}:${seconds.toString().padStart(2,'0')};
 return;
 
 }
@@ -335,8 +345,7 @@ const hours = Math.floor(diff / (1000 * 60 * 60));
 const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
 const seconds = Math.floor((diff % (1000 * 60)) / 1000);
 
-countdownEl.textContent =
-`${hours}:${minutes.toString().padStart(2,'0')}:${seconds.toString().padStart(2,'0')}`;
+countdownEl.textContent = ${hours}:${minutes.toString().padStart(2,'0')}:${seconds.toString().padStart(2,'0')};
 
 }
 

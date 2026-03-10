@@ -79,6 +79,9 @@ const users = [
 // DEMO felhasználó lejárati ideje
 const demoExpiry = new Date("2026-03-17T01:00:00");
 
+// LETILTOTT FELHASZNÁLÓK
+const bannedUsers = ["mark"];
+
 const loginContainer = document.getElementById("login-container");
 const tipsContainer = document.getElementById("tips-container");
 const errorP = document.getElementById("login-error");
@@ -97,15 +100,15 @@ document.getElementById("login-btn").addEventListener("click", () => {
     return;
   }
 
-  // LETILTOTT FELHASZNÁLÓK
-  if(userByName.name.toLowerCase() === "mark"){
+  // 1. LETILTOTT FELHASZNÁLÓK
+  if(bannedUsers.includes(userByName.name.toLowerCase())){
     errorP.textContent = "Fiók letiltva, indok: Accountmegosztás. DC-n keress fel egy admint!";
     errorP.classList.remove("success");
     errorP.classList.add("error");
     return;
   }
 
-  // DEMO felhasználó ellenőrzés
+  // 2. DEMO felhasználó ellenőrzés
   if(userByName.name.toLowerCase() === "demo"){
     const now = new Date();
     if(now >= demoExpiry){
@@ -116,6 +119,7 @@ document.getElementById("login-btn").addEventListener("click", () => {
     }
   }
 
+  // 3. Jelszó ellenőrzés
   if (userByName.password !== pass) {
     errorP.textContent = "Hibás jelszó! Jelszóemlékeztetőt kérj DC-n!";
     errorP.classList.remove("success");
@@ -123,7 +127,7 @@ document.getElementById("login-btn").addEventListener("click", () => {
     return;
   }
 
-  // sikeres login
+  // Sikeres login
   errorP.textContent = "Sikeres bejelentkezés! Betöltés...";
   errorP.classList.remove("error");
   errorP.classList.add("success");
@@ -210,10 +214,10 @@ function loadTips() {
     .catch(e => console.error("Hiba a fetch során:", e));
 }
 
-// FIX VISSZASZÁMLÁLÓ 2026-03-10 01:00-TÓL
+// VISSZASZÁMLÁLÓ
 function startCountdown() {
-  const startTime = new Date("2026-03-10T01:00:00"); // kezdés
-  const endTime = new Date("2026-03-17T01:00:00");   // vége
+  const startTime = new Date("2026-03-10T01:00:00");
+  const endTime = new Date("2026-03-17T01:00:00");
 
   const countdownEl = document.getElementById("countdown");
 

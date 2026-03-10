@@ -5,9 +5,6 @@ const users = [
   { name: "admin", password: "zino" },
   { name: "Mark", password: "Mark123" },
   { name: "demo", password: "demo" },
-
-  // új user lejárattal
-  { name: "user1", password: "pass", expiry: "2026-03-10T05:46:00" }
 ];
 
 // Bejelentkezés ellenőrzése

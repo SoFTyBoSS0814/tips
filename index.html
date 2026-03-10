@@ -101,7 +101,7 @@ document.getElementById("login-btn").addEventListener("click", () => {
   if(userByName.name.toLowerCase() === "demo"){
     const now = new Date();
     if(now >= demoExpiry){
-      errorP.textContent = "A DEMO felhasználó próbaidőszaka lejárt!";
+      errorP.textContent = "A DEMO felhasználó próbaidőszaka lejárt! DC-n találod az előfizetéseket";
       errorP.classList.remove("success");
       errorP.classList.add("error");
       return;
@@ -244,4 +244,5 @@ startCountdown();
 
 </body>
 </html>
+
 

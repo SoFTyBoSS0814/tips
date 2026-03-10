@@ -56,7 +56,7 @@
 
   <!-- Próbaidőszak info -->
   <p id="trial-info">
-    1 hetes próbaidőszak: 03.10 - 03.17 között! Discordon találod a logint! 
+    1 hetes próbaidőszak: 03.10 01:00 - 03.17 01:00 között! Discordon találod a logint! 
     <a href="https://discord.gg/VunhZFjEUr" target="_blank">https://discord.gg/VunhZFjEUr</a><br>
     <span id="countdown">168:00:00</span> óra hátra
   </p>
@@ -185,17 +185,26 @@ function loadTips() {
     .catch(e => console.error("Hiba a fetch során:", e));
 }
 
-// VISSZASZÁMLÁLÓ 168 ÓRÁRA
+// FIX VISSZASZÁMLÁLÓ 2026-03-10 01:00-TÓL
 function startCountdown() {
-  const endTime = new Date();
-  endTime.setHours(endTime.getHours() + 168); // 168 óra = 7 nap
+  const startTime = new Date("2026-03-10T01:00:00"); // kezdés
+  const endTime = new Date("2026-03-17T01:00:00");   // vége
 
   const countdownEl = document.getElementById("countdown");
 
   function updateCountdown() {
     const now = new Date();
-    let diff = endTime - now;
 
+    if(now < startTime) {
+      const diff = startTime - now;
+      const hours = Math.floor(diff / (1000 * 60 * 60));
+      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+      countdownEl.textContent = `Még nem indult: ${hours}:${minutes.toString().padStart(2,'0')}:${seconds.toString().padStart(2,'0')}`;
+      return;
+    }
+
+    let diff = endTime - now;
     if(diff <= 0){
       countdownEl.textContent = "Lejárt a próbaidőszak!";
       clearInterval(timer);

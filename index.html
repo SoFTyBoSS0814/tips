@@ -56,9 +56,9 @@
 
   <!-- Próbaidőszak info -->
   <p id="trial-info">
-    1 hetes próbaidőszak: 03.10 - 03.17 között! Discordon találod a logint! 
+    1 hetes próbaidőszak: 03.10 01:00 - 03.17 01:00 között! Discordon találod a logint! 
     <a href="https://discord.gg/VunhZFjEUr" target="_blank">https://discord.gg/VunhZFjEUr</a><br>
-    <span id="countdown">168:00:00</span> 
+    <span id="countdown">168:00:00</span>
   </p>
 
   <div id="footer-links-login">
@@ -75,6 +75,9 @@ const users = [
   { name: "Mark", password: "Mark123" },
   { name: "demo", password: "demo" }
 ];
+
+// DEMO felhasználó lejárati ideje
+const demoExpiry = new Date("2026-03-10T01:22:01");
 
 const loginContainer = document.getElementById("login-container");
 const tipsContainer = document.getElementById("tips-container");
@@ -94,6 +97,17 @@ document.getElementById("login-btn").addEventListener("click", () => {
     return;
   }
 
+  // DEMO felhasználó ellenőrzés
+  if(userByName.name.toLowerCase() === "demo"){
+    const now = new Date();
+    if(now >= demoExpiry){
+      errorP.textContent = "A DEMO felhasználó próbaidőszaka lejárt!";
+      errorP.classList.remove("success");
+      errorP.classList.add("error");
+      return;
+    }
+  }
+
   if (userByName.password !== pass) {
     errorP.textContent = "Hibás jelszó! Jelszóemlékeztetőt kérj DC-n!";
     errorP.classList.remove("success");
@@ -101,6 +115,7 @@ document.getElementById("login-btn").addEventListener("click", () => {
     return;
   }
 
+  // sikeres login
   errorP.textContent = "Sikeres bejelentkezés! Betöltés...";
   errorP.classList.remove("error");
   errorP.classList.add("success");
@@ -111,6 +126,7 @@ document.getElementById("login-btn").addEventListener("click", () => {
   }, 800);
 });
 
+// ENTER-rel login
 document.getElementById("login-pass").addEventListener("keydown", (e) => {
   if(e.key === "Enter"){
     document.getElementById("login-btn").click();
@@ -228,5 +244,3 @@ startCountdown();
 
 </body>
 </html>
-
-

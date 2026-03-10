@@ -18,8 +18,19 @@
     "icc_stream": "https://www.icc-cricket.com/matches/269764/bangladesh-vs-pakistan",
     "odds": "1.52",
     "scorecard": "https://www.espncricinfo.com/series/pakistan-in-bangladesh-2025-26-1525632/bangladesh-vs-pakistan-1st-odi-1525652/live-cricket-score"
+  },
+       {
+    "match": "Tasmania Tigers - New South Wales Blues",
+    "winner": "New South Wales Blues",
+    "start_time": "2026-03-12T03:05:00Z",
+    "type": "ODI",
+    "youtube_id": "",
+    "icc_stream": "",
+    "odds": "1.9",
+    "scorecard": "https://www.espncricinfo.com/series/one-day-cup-aus-2025-26-1495275/tasmania-vs-new-south-wales-final-1495331/live-cricket-score"
   }
 ]
+
 
 
 

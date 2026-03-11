@@ -1,15 +1,5 @@
 [
       {
-    "match": "Banglades - Pakisztán",
-    "winner": "Pakisztán",
-    "start_time": "2026-03-11T08:15:00Z",
-    "type": "T20",
-    "youtube_id": "",
-    "icc_stream": "https://www.icc-cricket.com/matches/269764/bangladesh-vs-pakistan",
-    "odds": "1.52",
-    "scorecard": "https://www.espncricinfo.com/series/pakistan-in-bangladesh-2025-26-1525632/bangladesh-vs-pakistan-1st-odi-1525652/live-cricket-score"
-  },
-      {
     "match": "Argentina - Mexico",
     "winner": "Argentina",
     "start_time": "2026-03-11T19:30:00Z",
@@ -20,6 +10,7 @@
     "scorecard": "https://www.espncricinfo.com/series/men-s-t20-world-cup-americas-qualifier-b-2025-26-1525152/argentina-vs-mexico-6th-match-1525171/live-cricket-score"
   }
 ]
+
 
 
 

@@ -28,6 +28,16 @@
     "icc_stream": "https://www.icc-cricket.com/matches/269648/argentina-vs-cayman-islands",
     "odds": "1.26",
     "scorecard": "https://www.espncricinfo.com/series/men-s-t20-world-cup-americas-qualifier-b-2025-26-1525152/cayman-islands-vs-argentina-12th-match-1525177/live-cricket-score"
+     },
+          {
+    "match": "Malajzia - Bahrein",
+    "winner": "Bahrein",
+    "start_time": "2026-03-16T01:30:00Z",
+    "type": "ODI",
+    "youtube_id": "https://www.youtube.com/watch?v=p7oaZbazDkI",
+    "icc_stream": "",
+    "odds": "1.75",
+    "scorecard": "https://www.cricketworld.com/cricket/malaysia-vs-bahrain/match/live/95693"
      }
 ]
 

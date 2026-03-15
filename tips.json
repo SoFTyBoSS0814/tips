@@ -9,7 +9,7 @@
     "odds": "1.45",
     "scorecard": "https://www.eredmenyek.com/merkozes/krikett/rN1TB3J7/"
   },
-            {
+   {
     "match": "Suriname - Mexikó",
     "winner": "Mexikó",
     "start_time": "2026-03-15T14:30:00Z",
@@ -18,7 +18,17 @@
     "icc_stream": "https://www.icc-cricket.com/matches/269647/suriname-vs-mexico",
     "odds": "1.6",
     "scorecard": "https://www.espncricinfo.com/series/men-s-t20-world-cup-americas-qualifier-b-2025-26-1525152/mexico-vs-suriname-11th-match-1525176/live-cricket-score"
-  }
+  },
+    {
+    "match": "Argentína - Kajmán-szigetek",
+    "winner": "Kajmán-szigetek",
+    "start_time": "2026-03-15T19:30:00Z",
+    "type": "T20",
+    "youtube_id": "",
+    "icc_stream": "https://www.icc-cricket.com/matches/269648/argentina-vs-cayman-islands",
+    "odds": "1.26",
+    "scorecard": "https://www.espncricinfo.com/series/men-s-t20-world-cup-americas-qualifier-b-2025-26-1525152/cayman-islands-vs-argentina-12th-match-1525177/live-cricket-score"
+     }
 ]
 
 
